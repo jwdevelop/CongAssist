@@ -1,0 +1,113 @@
+<clr-alert [(clrAlertClosed)]="isAlertClosed" [clrAlertType]="'alert-info'" [clrAlertAppLevel]="true">
+  <clr-alert-item>
+    <span class="alert-text">{{alertText}}</span>
+  </clr-alert-item>
+</clr-alert>
+
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+
+    <h5>사용신청목록</h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>전화번호</th>
+          <th>사용승인</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let signup of signups">
+          <td>{{signup.name}}</td>
+          <td>{{signup.phone}}</td>
+          <td>
+            <button class="btn btn-success btn-sm btn-icon no-margin" (click)="approve(signup)">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+            <button class="btn btn-danger btn-sm btn-icon no-margin" (click)="disapprove(signup)">
+              <clr-icon shape="times"></clr-icon>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="signups.length === 0">
+          <td colspan="3">사용자가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h5>사용중목록</h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>연락처</th>
+          <th>권한</th>
+          <th>아이디</th>
+          <th>수정</th>
+          <th>비밀번호</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>
+            <span *ngIf="selectedUser !== user">{{user.name}}</span>
+            <span *ngIf="selectedUser === user">
+              <input type="text" [(ngModel)]="editingUser.name">
+            </span>
+          </td>
+          <td>
+            <span *ngIf="selectedUser !== user">{{user.phone}}</span>
+            <span *ngIf="selectedUser === user">
+              <input type="text" [(ngModel)]="editingUser.phone">
+            </span>
+          </td>
+          <td>
+            <span *ngIf="selectedUser !== user">{{user.role}}</span>
+            <span *ngIf="selectedUser === user">
+              <div class="select">
+                <select [(ngModel)]="editingUser.role">
+                  <option value="member">member</option>
+                  <option value="assigner">assigner</option>
+                  <option value="admin">admin</option>
+                </select>
+              </div>
+            </span>
+          </td>
+          <td>
+            <span *ngIf="selectedUser !== user">{{user.username}}</span>
+            <span *ngIf="selectedUser === user">
+              <input type="text" [(ngModel)]="editingUser.username">
+            </span>
+          </td>
+          <td>
+            <span *ngIf="selectedUser === user">
+              <button class="btn btn-sm btn-success btn-icon no-margin" (click)="save()">
+                <clr-icon shape="check"></clr-icon>
+              </button>
+              <button class="btn btn-sm btn-warning btn-icon no-margin" (click)="selectedUser = null">
+                <clr-icon shape="times"></clr-icon>
+              </button>
+            </span>
+            <span *ngIf="selectedUser !== user">
+              <button class="btn btn-sm btn-icon no-margin" [disabled]="selectedUser" (click)="edit(user)">
+                <clr-icon shape="pencil"></clr-icon>
+              </button>
+              <button class="btn btn-sm btn-warning btn-icon no-margin" [disabled]="selectedUser" (click)="remove(user)">
+                <clr-icon shape="trash"></clr-icon>
+              </button>
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="resetPassword(user)">
+              <clr-icon shape="refresh"></clr-icon>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td colspan="6">사용자가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

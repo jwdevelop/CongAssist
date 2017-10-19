@@ -1,0 +1,90 @@
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+
+    <button class="btn btn-primary" (click)="isNewTerritoryOpen = true">
+      <clr-icon shape="plus"></clr-icon> 추가
+    </button>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>이름</th>
+          <th>기능</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let territory of territories">
+          <td>{{territory.number}}</td>
+          <td>{{territory.name}}</td>
+          <td>
+            <button class="btn btn-sm btn-icon no-margin" [routerLink]="['/house', territory.$key]">
+              <clr-icon shape="home"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-icon no-margin" (click)="viewMap(territory)">
+              <clr-icon shape="map"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-warning btn-icon no-margin" (click)="restart(territory)">
+              <clr-icon shape="refresh"></clr-icon>
+            </button>
+          </td>
+        </tr>
+        <td *ngIf="territories.length === 0" colspan="3">구역이 없습니다.</td>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="isMapOpen">
+  <div class="modal-body" *ngIf="selectedTerritory">
+    <ngui-map center="{{selectedTerritory.center.lat}}, {{selectedTerritory.center.lng}}" zoom="{{selectedTerritory.zoom}}">
+      <polygon [editable]="false" [paths]="selectedTerritory.paths"></polygon>
+    </ngui-map>
+  </div>
+</clr-modal>
+
+<clr-wizard #newTerritory [(clrWizardOpen)]="isNewTerritoryOpen" (clrWizardOnFinish)="createTerritory()" clrWizardSize="lg">
+  <clr-wizard-title>구역생성</clr-wizard-title>
+
+  <clr-wizard-button [type]="'cancel'">취소</clr-wizard-button>
+  <clr-wizard-button [type]="'previous'" *ngIf="currentPage > 1" (click)="currentPage = currentPage-1">뒤로</clr-wizard-button>
+  <clr-wizard-button [type]="'next'" *ngIf="newTerritoryForm.valid && currentPage < 2" (click)="currentPage = currentPage+1">다음</clr-wizard-button>
+  <clr-wizard-button [type]="'finish'" *ngIf="currentPage == 2 && polygons.length">finish</clr-wizard-button>
+
+  <clr-wizard-page [clrWizardPageNextDisabled]="newTerritoryForm.invalid">
+    <ng-template clrPageTitle>구역정보</ng-template>
+    <form class="form" [formGroup]="newTerritoryForm">
+      <section class="form-block">
+        <div class="form-group">
+          <label for="number">번호</label>
+          <input type="number" id="number" formControlName="number" placeholder="구역번호를 입력해주세요.">
+        </div>
+        <div class="form-group">
+          <label for="name">이름</label>
+          <input type="text" id="name" formControlName="name" placeholder="구역명을 입력해주세요.">
+        </div>
+      </section>
+    </form>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>지도입력</ng-template>
+    <ngui-map center="{{myCongregation}}">
+      <drawing-manager [drawingMode]="'polygon'" [drawingControl]="true" [drawingControlOptions]="{
+            drawingModes: ['polygon']
+           }" [circleOptions]="{
+            fillColor: '#ffff00',
+            fillOpacity: 1,
+            strokeWeight: 5,
+            editable: true,
+            zIndex: 1
+          }"></drawing-manager>
+    </ngui-map>
+    <button class="btn btn-danger btn-icon" (click)="clearMap()">
+      <clr-icon shape="trash"></clr-icon>
+    </button>
+  </clr-wizard-page>
+
+</clr-wizard>

@@ -1,0 +1,76 @@
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+
+    <clr-tabs>
+      <clr-tab>
+        <button clrTabLink>미할당</button>
+        <clr-tab-content *clrIfActive>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngFor="let user of unassignedUsers">
+              <div class="card">
+
+                <div class="card-block">
+                  <h3 class="card-title">{{user.name}}</h3>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-icon btn-primary" (click)="openAssignTerritory(user)"><clr-icon shape="plus"></clr-icon> 추가</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </clr-tab-content>
+      </clr-tab>
+
+      <clr-tab>
+        <button clrTabLink>할당됨</button>
+        <clr-tab-content *clrIfActive>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngFor="let user of assignedUsers">
+              <div class="card">
+
+                <div class="card-block">
+                  <h3 class="card-title">{{user.name}}</h3>
+                  <ul class="list-unstyled">
+                    <li *ngFor="let key of user.territories | keys">{{user.territories[key].number}}. {{user.territories[key].name}}</li>
+                  </ul>
+                </div>
+
+                <div class="card-footer">
+                  <clr-dropdown>
+                    <button type="button" class="btn btn-icon btn-danger" clrDropdownTrigger><clr-icon shape="trash"></clr-icon> 반납 <clr-icon shape="caret down"></clr-icon></button>
+                    <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
+                      <button type="button" clrDropdownItem *ngFor="let key of user.territories | keys" (click)="deleteTerritory(user, key)">{{user.territories[key].number}}. {{user.territories[key].name}}</button>
+                    </clr-dropdown-menu>
+                  </clr-dropdown>
+                  <button class="btn btn-icon btn-primary" (click)="openAssignTerritory(user)"><clr-icon shape="plus"></clr-icon> 추가</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </clr-tab-content>
+      </clr-tab>
+    </clr-tabs>
+
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="isAssignTerritoryOpen" [clrModalSize]="'sm'">
+  <h3 class="modal-title">구역추가</h3>
+  <div class="modal-body">
+    <table class="table">
+      <tbody>
+        <tr *ngFor="let territory of territories">
+          <td><button class="btn btn-sm btn-primary btn-icon no-margin" [disabled]="isAssignedTerritory(territory)" (click)="assignTerritory(territory)"><clr-icon shape="plus"></clr-icon> 추가</button></td>
+          <td>{{territory.number}}. {{territory.name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</clr-modal>

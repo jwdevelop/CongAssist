@@ -1,0 +1,40 @@
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+
+    <div *ngIf="!territories.length && !isLoading">
+      <clr-icon shape="times-circle" class="full-image"></clr-icon>
+      <h2 class="center">현재 구역카드가 없습니다.</h2>
+    </div>
+
+    <span *ngIf="isLoading" class="spinner spinner-lg spinner-center">Loading...</span>
+
+    <div class="row" *ngIf="territories.length">
+
+      <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngFor="let territory of territories">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">{{territory.number}}. {{territory.name}}</div>
+            <div class="card-text">{{territory.startDate}}</div>
+          </div>
+          <div class="card-block">
+            <div class="card-img">
+              <ngui-map center="{{territory.center.lat}}, {{territory.center.lng}}" zoom="{{territory.zoom}}">
+                <polygon [editable]="false" [paths]="territory.paths"></polygon>
+              </ngui-map>
+            </div>
+          </div>
+          <div class="card-footer">
+            <!-- TODO: Progress bar -->
+            <!-- <div class="progress">
+              <progress value="30" max="100"></progress>
+            </div> -->
+            <button [routerLink]="['/houselist', territory.$key]" class="btn btn-outline">봉사하기</button>
+            <button class="btn btn-danger" (click)="return(territory.$key)">반납하기</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

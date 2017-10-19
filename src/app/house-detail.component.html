@@ -1,0 +1,28 @@
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+    <div>
+
+      <!-- TODO: Image -->
+      <h2 *ngIf="history.length === 0">봉사기록이 없습니다.</h2>
+
+      <table class="table table-compact table-vertical" *ngFor="let record of history | orderBy:'timestamp' : false">
+        <tbody>
+          <tr>
+            <th>기록일</th>
+            <td>{{record.timestamp | date:'short'}}</td>
+          </tr>
+          <tr>
+            <th>전도인</th>
+            <td>{{record.username}}</td>
+          </tr>
+          <tr>
+            <th>노트</th>
+            <td>{{record.note ? record.note : record.code}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

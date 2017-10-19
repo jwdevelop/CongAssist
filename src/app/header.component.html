@@ -1,0 +1,31 @@
+<header class="header-5">
+  <div class="branding">
+    <a routerLink="/" class="nav-link">
+      <clr-icon shape="world"></clr-icon>
+      <span class="title">구역카드</span>
+    </a>
+  </div>
+  <!-- TODO: Navigation History, Go back button -->
+  <!-- <div class="header-nav">
+    <a href="" class="nav-link nav-text">이전메뉴</a>
+    <a href="" class="active nav-link nav-text">현재메뉴</a>
+  </div> -->
+  <div class="header-actions">
+    <clr-dropdown>
+      <button class="nav-icon" [disabled]="isLoading" clrDropdownTrigger>
+        <span class="spinner spinner-sm" *ngIf="isLoading"></span>
+        <clr-icon shape="cog" *ngIf="!isLoading"></clr-icon>
+        <clr-icon shape="caret down"></clr-icon>
+      </button>
+      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <!-- TODO: Hide some menu according to the user role -->
+        <!-- <a href="..." clrDropdownItem>내 방문</a> -->
+        <a routerLink="/assign" *ngIf="user.role == 'assigner' || user.role == 'admin'" clrDropdownItem>구역할당</a>
+        <a routerLink="/territory" *ngIf="user.role == 'admin'" clrDropdownItem>구역관리</a>
+        <a routerLink="/users" *ngIf="user.role == 'admin'" clrDropdownItem>사용자 관리</a>
+        <a routerLink="/setting" *ngIf="user.role != 'admin'" clrDropdownItem>설정</a>
+        <a (click)="logout()" clrDropdownItem>로그아웃</a>
+      </clr-dropdown-menu>
+    </clr-dropdown>
+  </div>
+</header>

@@ -1,0 +1,59 @@
+<clr-alert [(clrAlertClosed)]="isAlertClosed" [clrAlertType]="'alert-info'" [clrAlertAppLevel]="true">
+  <clr-alert-item>
+    <span class="alert-text">사용신청이 완료되었습니다.</span>
+  </clr-alert-item>
+</clr-alert>
+
+<div class="content-container">
+  <div class="content-area">
+    <div class="login-wrapper">
+      <form class="login" [formGroup]="loginForm" (ngSubmit)="login()">
+        <label class="title">회중 구역카드
+          <h5 class="hint">처음 로그인시에는 전화번호를 사용해서 로그인 하실 수 있습니다.</h5>
+        </label>
+        <div class="login-group">
+          <!-- TODO: Congregation Name auto complete -->
+          <input class="username" type="text" formControlName="congregation" placeholder="회중이름">
+          <input class="username" type="text" formControlName="username" placeholder="아이디">
+          <input class="password" type="password" formControlName="password" placeholder="비밀번호">
+          <div class="error" [class.active]="isSubmitted && !isLoading">사용자를 찾을 수 없습니다.</div>
+          <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn btn-primary">로그인</button>
+          <a (click)="isSignupOpen = true" class="signup">사용신청하기</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="overlay" *ngIf="isLoading">
+  <span class="spinner spinner-center">Loading...</span>
+</div>
+
+<clr-modal [(clrModalOpen)]="isSignupOpen" [clrModalStaticBackdrop]="true">
+  <h3 class="modal-title">사용신청하기</h3>
+  <div class="modal-body">
+    <form class="compact" [formGroup]="signupForm">
+      <section class="form-block">
+        <div class="form-group">
+          <label for="requestingCong">회중</label>
+          <input type="text" formControlName="congregation" id="requestingCong" placeholder="회중을 입력해 주세요.">
+        </div>
+        <div class="form-group">
+          <label for="requstingName">이름</label>
+          <input type="text" formControlName="name" id="requstingName" placeholder="이름을 입력해 주세요.">
+        </div>
+        <div class="form-group">
+          <label for="requstingPhone">전화번호</label>
+          <input type="text" formControlName="phone" id="requstingPhone" placeholder="전화번호를 입력해 주세요.">
+        </div>
+        <div class="form-group">
+          <label for="requestingPassword">비밀번호</label>
+          <input type="password" formControlName="password" id="requestingPassword" placeholder="비밀번호를 입력해 주세요.">
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="isSignupOpen = false">취소</button>
+    <button type="button" class="btn btn-primary" [disabled]="signupForm.invalid" (click)="signup()">사용신청</button>
+  </div>
+</clr-modal>

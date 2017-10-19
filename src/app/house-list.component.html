@@ -1,0 +1,48 @@
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+    <h3>구역카드이름</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="left">집이름</th>
+          <th>방문일</th>
+          <th>특이사항</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr *ngFor="let house of houses | orderBy:'order'">
+          <td class="left" [routerLink]="['/housedetail', house.$key]">{{house.name}}</td>
+          <td>
+            <clr-dropdown>
+              <button type="button" class="btn btn-sm btn-icon no-margin" [ngClass]="{'btn-success': house.records}" clrDropdownTrigger>
+                <clr-icon shape="home"></clr-icon>
+                <clr-icon shape="caret down"></clr-icon>
+              </button>
+              <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+                <button type="button" clrDropdownItem (click)="visit(house, 1)">만남</button>
+                <button type="button" clrDropdownItem (click)="visit(house, 2)">부재</button>
+                <div class="dropdown-divider"></div>
+                <button type="button" clrDropdownItem (click)="visit(house, 3)">거절</button>
+                <button type="button" clrDropdownItem (click)="visit(house, 4)">노트</button>
+              </clr-dropdown-menu>
+            </clr-dropdown>
+          </td>
+          <td>{{house.note}}</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="isMakeNoteOpen" [clrModalSize]="'sm'">
+  <h3 class="modal-title">노트 추가</h3>
+  <div class="modal-body">
+    <textarea id="note" rows="3" [(ngModel)]="note"></textarea>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-icon" [disabled]="note.length < 1" (click)="makeNote()"><clr-icon shape="floppy"></clr-icon></button>
+  </div>
+</clr-modal>
