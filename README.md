@@ -1,28 +1,37 @@
-# CongAssist
+# 회중 구역카드
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.0.
+[이곳](https://app.congassist.xyz) 에서 확인해 보실 수 있습니다.
 
-## Development server
+#### 테스트 로그인 정보
+* 회중: 안성공도
+* 아이디: admin
+* 비밀번호: admin
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## 설정
+자신의 계정에서 사용하고 싶다면 아래의 설정과정을 참조하세요.
 
-## Code scaffolding
+1. Google Map API Key, Firebase API Key 설정
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
+>> [Google Cloud Platform](https://console.cloud.google.com/apis/credentials) 에서 Google Map API 를 활성화 하고 API Key 를 `/src/environments/environment.example.ts` 에 있는 googleApi 에 넣는다.
 
-## Build
+>> [Firebase](https://console.firebase.google.com/project/) 사이트에서 API Key 등의 정보를 `environment.example.ts` 에 넣는다.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+2. environment 설정
 
-## Running unit tests
+>> `environment.example.ts` 파일을 `environment.ts` 로 파일명을 변경한다.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+3. Dependencies 설치
 
-## Running end-to-end tests
+>> `npm install` 명령어를 폴더의 터미널에서 실행
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+4. Local 환경에서 테스트
 
-## Further help
+>> `ng serve -o`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+5. Build
+
+>> `ng build`
+
+6. Firebase 로 Deploy. (`firebase-tools` 설치 필요) [참조사이트](https://firebase.google.com/docs/hosting/deploying)
+
+>> `firebase deploy`
