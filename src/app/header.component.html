@@ -5,11 +5,11 @@
       <span class="title">구역카드</span>
     </a>
   </div>
-  <!-- TODO: Navigation History, Go back button -->
-  <!-- <div class="header-nav">
-    <a href="" class="nav-link nav-text">이전메뉴</a>
-    <a href="" class="active nav-link nav-text">현재메뉴</a>
-  </div> -->
+  <!-- TODO: Navigation History -->
+  <div class="header-nav" *ngIf="location.path() !== '/home'">
+    <a (click)="goBack()" class="nav-link nav-text"><clr-icon shape="angle" dir="left"></clr-icon></a>
+    <!-- <a href="" class="active nav-link nav-text">현재메뉴</a> -->
+  </div>
   <div class="header-actions">
     <clr-dropdown>
       <button class="nav-icon" [disabled]="isLoading" clrDropdownTrigger>
