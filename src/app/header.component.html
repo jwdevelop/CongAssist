@@ -6,7 +6,7 @@
     </a>
   </div>
   <!-- TODO: Navigation History -->
-  <div class="header-nav" *ngIf="location.path() !== '/home'">
+  <div class="header-nav" *ngIf="!isHome">
     <a (click)="goBack()" class="nav-link nav-text"><clr-icon shape="angle" dir="left"></clr-icon></a>
     <!-- <a href="" class="active nav-link nav-text">현재메뉴</a> -->
   </div>

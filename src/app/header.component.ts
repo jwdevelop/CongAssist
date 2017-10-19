@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
 
   user: User;
   isLoading = true;
+  isHome = false;
 
   constructor(
     private router: Router,
@@ -20,6 +21,8 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.isHome = this.location.path() === '/home';
+
     this.authService.getCurrentUser().subscribe(user => {
       this.user = user;
       this.isLoading = false;
