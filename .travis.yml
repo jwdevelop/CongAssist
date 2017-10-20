@@ -8,13 +8,18 @@ before_script:
 - npm install -g firebase-tools
 - npm install -g @angular/cli
 script:
-- ng build --prod
+- if [ "$TRAVIS_PULL_REQUEST" != "true" ]; then ng build; fi
+- if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ng build --prod; fi
 after_success:
-- firebase deploy --token $FIREBASE_TOKEN
+- if [ "$TRAVIS_PULL_REQUEST" != "true" ]; then firebase deploy --project qa --token $FIREBASE_TOKEN; fi
+- if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then firebase deploy --token $FIREBASE_TOKEN; fi
 notifications:
   email:
     on_failure: change
     on_success: change
 before_install:
+- openssl aes-256-cbc -K $encrypted_2a348a39eadd_key -iv $encrypted_2a348a39eadd_iv
+  -in src/environments/environment.ts.enc -out src/environments/environment.ts -d
 - openssl aes-256-cbc -K $encrypted_4fb3cb473dc2_key -iv $encrypted_4fb3cb473dc2_iv
-  -in src/environments/environment.prod.ts.enc -out src/environments/environment.prod.ts -d
+  -in src/environments/environment.prod.ts.enc -out src/environments/environment.prod.ts
+  -d
