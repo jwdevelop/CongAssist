@@ -12,6 +12,7 @@ import { AssignComponent } from 'app/assign.component';
 import { TerritoryComponent } from 'app/territory.component';
 import { HouseComponent } from 'app/house.component';
 import { SettingComponent } from 'app/setting.component';
+import { ConfigurationsComponent } from 'app/configurations.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -20,6 +21,7 @@ const appRoutes: Routes = [
   { path: 'assign', component: AssignComponent, canActivate: [ AuthGuard ] },
   { path: 'territory', component: TerritoryComponent, canActivate: [ AuthGuard ] },
   { path: 'setting', component: SettingComponent, canActivate: [ AuthGuard ] },
+  { path: 'configurations', component: ConfigurationsComponent, canActivate: [ AuthGuard ] },
   { path: 'house/:key', component: HouseComponent, canActivate: [ AuthGuard ] },
   { path: 'houselist/:key', component: HouseListComponent, canActivate: [ AuthGuard ] },
   { path: 'housedetail/:key', component: HouseDetailComponent, canActivate: [ AuthGuard ] },

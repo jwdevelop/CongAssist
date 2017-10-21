@@ -22,8 +22,9 @@
         <!-- <a href="..." clrDropdownItem>내 방문</a> -->
         <a routerLink="/assign" *ngIf="user.role == 'assigner' || user.role == 'admin'" clrDropdownItem>구역할당</a>
         <a routerLink="/territory" *ngIf="user.role == 'admin'" clrDropdownItem>구역관리</a>
-        <a routerLink="/users" *ngIf="user.role == 'admin'" clrDropdownItem>사용자 관리</a>
-        <a routerLink="/setting" *ngIf="user.role != 'admin'" clrDropdownItem>설정</a>
+        <a routerLink="/users" *ngIf="user.role == 'admin'" clrDropdownItem>사용자관리</a>
+        <a routerLink="/configurations" *ngIf="user.role == 'admin'" clrDropdownItem>구역설정</a>
+        <a routerLink="/setting" clrDropdownItem>설정</a>
         <a (click)="logout()" clrDropdownItem>로그아웃</a>
       </clr-dropdown-menu>
     </clr-dropdown>

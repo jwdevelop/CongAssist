@@ -1,0 +1,24 @@
+<clr-alert [(clrAlertClosed)]="isAlertClosed" [clrAlertType]="'alert-info'" [clrAlertAppLevel]="true">
+  <clr-alert-item>
+    <span class="alert-text">{{alertText}}</span>
+  </clr-alert-item>
+</clr-alert>
+
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+
+    <form class="form" [formGroup]="configForm">
+      <section class="form-block">
+        <label>구역관리 설정</label>
+        <div class="form-group">
+          <label for="announcement">광고</label>
+          <textarea id="announcement" rows="2" formControlName="announcement"></textarea>
+          <button class="btn btn-icon btn-success" [disabled]="isLoading || isAnnouncementShowing || !configForm.get('announcement').value" (click)="updateAnnouncement(true)"><clr-icon shape="eye"></clr-icon></button>
+          <button class="btn btn-icon" [disabled]="isLoading || !isAnnouncementShowing" (click)="updateAnnouncement(false)"><clr-icon shape="eye-hide"></clr-icon></button>
+        </div>
+      </section>
+    </form>
+
+  </div>
+</div>
