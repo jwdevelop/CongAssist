@@ -29,10 +29,11 @@ export class SettingComponent implements OnInit {
 
     this.authService.getCurrentUser().subscribe(user => {
       this.user = user;
+      const phone = this.user.phone ? this.user.phone : '';
 
       this.userForm.setValue({
         name: this.user.name,
-        phone: this.user.phone,
+        phone: phone,
         username: this.user.username,
         password: ''
       });

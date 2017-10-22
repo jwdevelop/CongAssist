@@ -16,6 +16,7 @@ import { AppRoutingModule } from 'app/app-routing.module';
 import { AuthService } from 'app/services/auth.service';
 import { TerritoryService } from 'app/services/territory.service';
 import { UserService } from 'app/services/user.service';
+import { ConfigurationService } from 'app/services/configuration.service';
 // Pipe
 import { KeysPipe } from 'app/pipes/keys.pipe';
 import { OrderByPipe } from 'app/pipes/orderby.pipe';
@@ -31,6 +32,7 @@ import { AssignComponent } from 'app/assign.component';
 import { TerritoryComponent } from 'app/territory.component';
 import { HouseComponent } from 'app/house.component';
 import { SettingComponent } from 'app/setting.component';
+import { ConfigurationsComponent } from 'app/configurations.component';
 
 @NgModule({
   declarations: [
@@ -46,8 +48,9 @@ import { SettingComponent } from 'app/setting.component';
     AssignComponent,
     TerritoryComponent,
     HouseComponent,
-    SettingComponent
-  ],
+    SettingComponent,
+    ConfigurationsComponent
+],
   imports: [
     BrowserModule,
     FormsModule,
@@ -59,7 +62,7 @@ import { SettingComponent } from 'app/setting.component';
     NguiMapModule.forRoot({apiUrl: `https://maps.google.com/maps/api/js?key=${environment.googleApi}&libraries=drawing`}),
     AppRoutingModule
   ],
-  providers: [ AuthService, TerritoryService, UserService ],
+  providers: [ AuthService, TerritoryService, UserService, ConfigurationService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

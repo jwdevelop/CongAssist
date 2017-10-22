@@ -2,6 +2,12 @@
 <div class="content-container">
   <div class="content-area">
 
+    <clr-alert [(clrAlertClosed)]="isAlertClosed" [clrAlertType]="'alert-info'">
+      <clr-alert-item>
+        <span class="alert-text">{{alertText}}</span>
+      </clr-alert-item>
+    </clr-alert>
+
     <div *ngIf="!territories.length && !isLoading">
       <clr-icon shape="times-circle" class="full-image"></clr-icon>
       <h2 class="center">현재 구역카드가 없습니다.</h2>
