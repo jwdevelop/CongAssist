@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "congassist-1935",
+    "prod": "congassist-1935",
     "qa": "congassist-qa"
   }
 }
