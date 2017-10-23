@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Territory } from 'app/classes/territory';
 import { AuthService } from 'app/services/auth.service';
 import { TerritoryService } from 'app/services/territory.service';
+import { ConfigurationService } from 'app/services/configuration.service';
 
 @Component({
   templateUrl: './home.component.html'
@@ -10,10 +11,13 @@ export class HomeComponent implements OnInit {
 
   territories: Territory[] = [];
   isLoading = true;
+  isAlertClosed = true;
+  alertText = '';
 
   constructor(
     private authService: AuthService,
-    private territoryService: TerritoryService
+    private territoryService: TerritoryService,
+    private configurationService: ConfigurationService
   ) {}
 
   ngOnInit() {
@@ -27,6 +31,13 @@ export class HomeComponent implements OnInit {
       }
 
       this.isLoading = false;
+    });
+
+    this.configurationService.getAnnouncement().subscribe(config => {
+      if (config && config.text && config.isVisible) {
+        this.alertText = config.text;
+        this.isAlertClosed = false;
+      }
     });
   }
 
