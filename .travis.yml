@@ -12,7 +12,7 @@ script:
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ng build --prod; fi
 after_success:
 - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then firebase deploy --project qa --token $FIREBASE_TOKEN; fi
-- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then firebase deploy --token $FIREBASE_TOKEN; fi
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then firebase deploy --project prod --token $FIREBASE_TOKEN; fi
 notifications:
   email:
     on_failure: change
