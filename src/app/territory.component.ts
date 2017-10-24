@@ -99,8 +99,7 @@ export class TerritoryComponent implements OnInit {
     this.territoryService.createTerritory(territory).then((ref) => {
       if (this.newTerritoryForm.get('isApartment').value) {
         const territoryKey = ref.key;
-        const buildings = this.newTerritoryForm.get('buildings').value.toString().trim().split(',')
-                                                                                  .map(building => building.replace(/\D/g, ''));
+        const buildings = this.newTerritoryForm.get('buildings').value.toString().replace(/\w/g, '').trim().split(',');
         const levelFrom = +this.newTerritoryForm.get('levelFrom').value.toString().replace(/\D/g, '').trim();
         const levelTo = +this.newTerritoryForm.get('levelTo').value.toString().replace(/\D/g, '').trim();
         const numberFrom = +this.newTerritoryForm.get('numberFrom').value.toString().replace(/\D/g, '').trim();
