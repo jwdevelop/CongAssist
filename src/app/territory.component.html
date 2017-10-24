@@ -65,6 +65,32 @@
           <label for="name">이름</label>
           <input type="text" id="name" formControlName="name" placeholder="구역명을 입력해주세요.">
         </div>
+        <div class="form-group">
+          <label for="isApartment">아파트</label>
+          <clr-checkbox id="isApartment" formControlName="isApartment"></clr-checkbox>
+        </div>
+      </section>
+      <section class="form-block" *ngIf="newTerritoryForm.get('isApartment').value">
+        <div class="form-group">
+          <label for="buildings">아파트 동</label>
+          <input type="text" id="buildings" formControlName="buildings" placeholder="예) 101,111">
+        </div>
+        <div class="form-group">
+          <label for="levelFrom">시작하는 층</label>
+          <input type="number" id="levelFrom" formControlName="levelFrom" placeholder="예) 11">
+        </div>
+        <div class="form-group">
+          <label for="levelTo">끝나는 층</label>
+          <input type="number" id="levelTo" formControlName="levelTo" placeholder="예) 15">
+        </div>
+        <div class="form-group">
+          <label for="numberFrom">시작하는 호수</label>
+          <input type="number" id="numberFrom" formControlName="numberFrom" placeholder="예) 1">
+        </div>
+        <div class="form-group">
+          <label for="numberTo">끝나는 호수</label>
+          <input type="number" id="numberTo" formControlName="numberTo" placeholder="예) 6">
+        </div>
       </section>
     </form>
   </clr-wizard-page>
