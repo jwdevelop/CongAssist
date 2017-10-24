@@ -39,6 +39,16 @@ export class UserService {
       role: 'member'
     };
 
+    this.db.list(`${congregation}/users`).forEach(users => {
+      if (users.filter(el => el.username === user.username).length) {
+        let code = 'a'.charCodeAt(0);
+        do {
+          code++;
+        } while (users.filter(el => el.username === user.username + String.fromCharCode(code)).length);
+        user.username += String.fromCharCode(code);
+      }
+    });
+
     return this.db.list(`${congregation}/users`).push(user).then(() => this.removeSignup(signup.$key));
   }
 
@@ -87,9 +97,32 @@ export class UserService {
     const congregation = this.authService.getCongregation();
     const userKey = user.$key;
     delete user.$key;
-    return this.db.object(`${congregation}/users/${userKey}`).update(user);
+    if (user.password) { delete user.password; }
+
+    this.db.list(`${congregation}/users`).forEach(users => {
+      users = users.filter(el => el.$key !== userKey && el.username === user.username);
+      if (users.length) {
+        delete user.username;
+      }
+    });
+
+    return this.db.object(`${congregation}/users/${userKey}`).update(user).then(() => {
+      if (user.username) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
   }
 
+  /**
+   * Remove user information from the firebase database
+   *
+   * @param {string} userKey
+   * @returns
+   * @memberof UserService
+   */
   removeUser(userKey: string) {
     const congregation = this.authService.getCongregation();
     return this.db.object(`${congregation}/users/${userKey}`).remove();

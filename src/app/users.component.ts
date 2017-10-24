@@ -12,6 +12,7 @@ export class UsersComponent implements OnInit {
   users: User[] = [];
   alertText = '';
   isAlertClosed = true;
+  alertType = 'alert-info';
   selectedUser: User;
   editingUser: User;
 
@@ -34,6 +35,7 @@ export class UsersComponent implements OnInit {
 
   resetPassword(user: User) {
     this.userService.resetPassword(user).then(() => {
+      this.alertType = 'alert-info';
       this.alertText = '비밀번호가 초기화 되었습니다.';
       this.isAlertClosed = false;
       setTimeout(() => this.isAlertClosed = true, 1000);
@@ -48,12 +50,24 @@ export class UsersComponent implements OnInit {
   save() {
     this.editingUser.$key = this.selectedUser.$key;
     this.editingUser.phone = this.editingUser.phone.replace(/\D/g, '');
-    this.userService.updateUser(this.editingUser);
-    this.selectedUser = null;
+    this.userService.updateUser(this.editingUser).then(success => {
+      console.log(success)
+      if (success) {
+        this.alertType = 'alert-info';
+        this.alertText = '저장되었습니다.';
+      } else {
+        this.alertType = 'alert-warning';
+        this.alertText = '이미 사용중인 아이디가 있습니다.';
+      }
+      this.isAlertClosed = false;
+      setTimeout(() => this.isAlertClosed = true, 1000);
+      this.selectedUser = null;
+    });
   }
 
   remove(user: User) {
     this.userService.removeUser(user.$key).then(() => {
+      this.alertType = 'alert-info';
       this.alertText = '삭제되었습니다.';
       this.isAlertClosed = false;
       setTimeout(() => this.isAlertClosed = true, 1000);

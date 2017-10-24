@@ -12,6 +12,7 @@ export class SettingComponent implements OnInit {
   userForm: FormGroup;
   user: User;
   isAlertClosed = true;
+  alertType = 'alert-info';
   alertText: string;
 
   constructor(
@@ -55,8 +56,16 @@ export class SettingComponent implements OnInit {
       });
     }
 
-    this.userService.updateUser(userInfo).then(() => {
-      this.alertText = (password ? '비밀번호, ' : '') + '사용자정보가 변경 되었습니다.';
+    this.userService.updateUser(userInfo).then(success => {
+      if (success) {
+        this.alertType = 'alert-info';
+        this.alertText = (password ? '비밀번호, ' : '') + '사용자정보가 변경 되었습니다.';
+      } else {
+        this.alertType = 'alert-warning';
+        this.alertText = '이미 사용중인 아이디가 있습니다.';
+        this.userForm.get('username').setValue(this.user.username);
+      }
+
       this.isAlertClosed = false;
       setTimeout(() => this.isAlertClosed = true, 1000);
     });
