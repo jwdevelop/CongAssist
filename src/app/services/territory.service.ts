@@ -100,7 +100,7 @@ export class TerritoryService {
    */
   createHouse(territoryKey: string, house: House) {
     const congregation = this.authService.getCongregation();
-    delete house.$key;
+    if (house.$key) { delete house.$key; }
     return this.db.list(`${congregation}/houses/${territoryKey}`).push(house);
   }
 

@@ -6,6 +6,7 @@ import { Wizard } from 'clarity-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DrawingManager } from '@ngui/map';
 import { Path } from 'app/classes/path';
+import { House } from 'app/classes/house';
 
 @Component({
   templateUrl: './territory.component.html'
@@ -33,7 +34,13 @@ export class TerritoryComponent implements OnInit {
   ngOnInit() {
     this.newTerritoryForm = new FormGroup({
       number: new FormControl('', [Validators.required, Validators.min(1)]),
-      name: new FormControl('', Validators.required)
+      name: new FormControl('', Validators.required),
+      isApartment: new FormControl(false),
+      buildings: new FormControl(''),
+      levelFrom: new FormControl(null),
+      levelTo: new FormControl(null),
+      numberFrom: new FormControl(null),
+      numberTo: new FormControl(null)
     });
 
     this.territoryService.getTerritories().subscribe(territories => this.territories = territories);
@@ -89,11 +96,35 @@ export class TerritoryComponent implements OnInit {
       paths: paths
     };
 
-    this.territoryService.createTerritory(territory);
-    this.currentPage = 1;
-    this.wizard.reset();
-    this.newTerritoryForm.reset();
-    this.clearMap();
+    this.territoryService.createTerritory(territory).then((ref) => {
+      if (this.newTerritoryForm.get('isApartment').value) {
+        const territoryKey = ref.key;
+        const buildings = this.newTerritoryForm.get('buildings').value.toString().trim().split(',')
+                                                                                  .map(building => building.replace(/\D/g, ''));
+        const levelFrom = +this.newTerritoryForm.get('levelFrom').value.toString().replace(/\D/g, '').trim();
+        const levelTo = +this.newTerritoryForm.get('levelTo').value.toString().replace(/\D/g, '').trim();
+        const numberFrom = +this.newTerritoryForm.get('numberFrom').value.toString().replace(/\D/g, '').trim();
+        const numberTo = +this.newTerritoryForm.get('numberTo').value.toString().replace(/\D/g, '').trim();
+
+        let order = 1;
+        buildings.forEach(building => {
+          for (let i = levelFrom; i <= levelTo; i++) {
+            for (let j = numberFrom; j <= numberTo; j++) {
+              const house: House = {
+                name: building + '동 ' + i.toString() + '0' + j.toString() + '호',
+                order: order++
+              };
+              this.territoryService.createHouse(territoryKey, house);
+            }
+          }
+        });
+      }
+
+      this.currentPage = 1;
+      this.wizard.reset();
+      this.newTerritoryForm.reset();
+      this.clearMap();
+    });
   }
 
 }
