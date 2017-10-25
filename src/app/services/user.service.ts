@@ -106,14 +106,7 @@ export class UserService {
       }
     });
 
-    return this.db.object(`${congregation}/users/${userKey}`).update(user).then(() => {
-      if (user.username) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-
+    return this.db.object(`${congregation}/users/${userKey}`).update(user).then(() => user.username !== undefined);
   }
 
   /**

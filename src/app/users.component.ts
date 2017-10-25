@@ -51,7 +51,6 @@ export class UsersComponent implements OnInit {
     this.editingUser.$key = this.selectedUser.$key;
     this.editingUser.phone = this.editingUser.phone.replace(/\D/g, '');
     this.userService.updateUser(this.editingUser).then(success => {
-      console.log(success)
       if (success) {
         this.alertType = 'alert-info';
         this.alertText = '저장되었습니다.';
@@ -60,8 +59,8 @@ export class UsersComponent implements OnInit {
         this.alertText = '이미 사용중인 아이디가 있습니다.';
       }
       this.isAlertClosed = false;
-      setTimeout(() => this.isAlertClosed = true, 1000);
       this.selectedUser = null;
+      setTimeout(() => this.isAlertClosed = true, 1000);
     });
   }
 
