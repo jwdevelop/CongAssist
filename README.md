@@ -1,3 +1,4 @@
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/jwdevelop/CongAssist.png?columns=all)](https://waffle.io/jwdevelop/CongAssist?utm_source=badge)
 # 회중 구역카드
 
 [이곳](https://app.congassist.xyz) 에서 확인해 보실 수 있습니다.
