@@ -1,4 +1,9 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/jwdevelop/CongAssist.png?columns=all)](https://waffle.io/jwdevelop/CongAssist?utm_source=badge)
+
+[![Build Status](https://travis-ci.org/jwdevelop/CongAssist.svg?branch=master)](https://travis-ci.org/jwdevelop/CongAssist)
+[![Dependencies](https://david-dm.org/jwdevelop/CongAssist.svg)](https://david-dm.org/jwdevelop/CongAssist)
+[![Dev Dependencies](https://david-dm.org/jwdevelop/CongAssist/dev-status.svg)](https://david-dm.org/jwdevelop/CongAssist#info=devDependencies)
+
 # 회중 구역카드
 
 [이곳](https://app.congassist.xyz) 에서 확인해 보실 수 있습니다.
