@@ -231,4 +231,12 @@ export class TerritoryService {
     return this.db.list(`${congregation}/history/houses/${houseKey}`);
   }
 
+  updateTerritory(territory: Territory) {
+    const congregation = this.authService.getCongregation();
+    const territoryKey = territory.$key;
+    delete territory.$key;
+
+    return this.db.object(`${congregation}/territories/${territoryKey}`).update(territory);
+  }
+
 }
