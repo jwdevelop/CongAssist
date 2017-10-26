@@ -1,10 +1,10 @@
 import { Path } from 'app/classes/path';
 
-export class Territory {
+export interface Territory {
   number: number;
   name: string;
-  center: Path;
-  zoom: number;
-  paths: any[];
+  center?: Path;
+  zoom?: number;
+  paths?: any[];
   $key?: any;
 }

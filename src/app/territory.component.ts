@@ -15,14 +15,15 @@ export class TerritoryComponent implements OnInit {
 
   @ViewChild('newTerritory') wizard: Wizard;
   @ViewChild(DrawingManager) drawingManager: DrawingManager;
-  isMapOpen = false;
-  selectedTerritory: Territory;
-  isNewTerritoryOpen = false;
   newTerritoryForm: FormGroup;
+  selectedTerritory: Territory;
+  editingTerritory: Territory;
+  myCongregation: string;
+  isMapOpen = false;
+  isNewTerritoryOpen = false;
   currentPage = 1;
   polygons: any[] = [];
   map: any;
-  myCongregation: string;
 
   territories: Territory[] = [];
 
@@ -60,7 +61,7 @@ export class TerritoryComponent implements OnInit {
   }
 
   viewMap(territory: Territory) {
-    this.selectedTerritory = territory;
+    this.editingTerritory = territory;
     this.isMapOpen = true;
   }
 
@@ -124,6 +125,20 @@ export class TerritoryComponent implements OnInit {
       this.newTerritoryForm.reset();
       this.clearMap();
     });
+  }
+
+  editInfo(territory: Territory) {
+    this.selectedTerritory = territory;
+    this.editingTerritory = Object.assign({}, territory);
+  }
+
+  updateInfo() {
+    const territory = {
+      $key: this.selectedTerritory.$key,
+      number: this.editingTerritory.number,
+      name: this.editingTerritory.name
+    };
+    this.territoryService.updateTerritory(territory).then(() => this.selectedTerritory = null);
   }
 
 }

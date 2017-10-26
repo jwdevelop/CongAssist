@@ -16,9 +16,24 @@
       </thead>
       <tbody>
         <tr *ngFor="let territory of territories | orderBy:'number'">
-          <td>{{territory.number}}</td>
-          <td>{{territory.name}}</td>
           <td>
+            <span *ngIf="selectedTerritory === territory"><input type="number" min="1" [(ngModel)]="editingTerritory.number"></span>
+            <span *ngIf="selectedTerritory !== territory">{{territory.number}}</span>
+          </td>
+          <td>
+            <span *ngIf="selectedTerritory === territory"><input type="text" min="1" [(ngModel)]="editingTerritory.name"></span>
+            <span *ngIf="selectedTerritory !== territory">{{territory.name}}</span>
+            <button class="btn btn-sm btn-success-outline btn-icon no-margin" *ngIf="selectedTerritory === territory" (click)="updateInfo()">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-icon no-margin" *ngIf="selectedTerritory !== territory" [disabled]="selectedTerritory" (click)="editInfo(territory)">
+              <clr-icon shape="pencil"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-warning-outline btn-icon no-margin" *ngIf="selectedTerritory === territory" (click)="selectedTerritory = null">
+              <clr-icon shape="times"></clr-icon>
+            </button>
             <button class="btn btn-sm btn-icon no-margin" [routerLink]="['/house', territory.$key]">
               <clr-icon shape="home"></clr-icon>
             </button>
@@ -38,9 +53,9 @@
 </div>
 
 <clr-modal [(clrModalOpen)]="isMapOpen">
-  <div class="modal-body" *ngIf="selectedTerritory">
-    <ngui-map center="{{selectedTerritory.center.lat}}, {{selectedTerritory.center.lng}}" zoom="{{selectedTerritory.zoom}}">
-      <polygon [editable]="false" [paths]="selectedTerritory.paths"></polygon>
+  <div class="modal-body" *ngIf="editingTerritory">
+    <ngui-map center="{{editingTerritory.center.lat}}, {{editingTerritory.center.lng}}" zoom="{{editingTerritory.zoom}}">
+      <polygon [editable]="false" [paths]="editingTerritory.paths"></polygon>
     </ngui-map>
   </div>
 </clr-modal>
