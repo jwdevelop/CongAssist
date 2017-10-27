@@ -17,11 +17,9 @@ export class TerritoryComponent implements OnInit {
   @ViewChild(DrawingManager) drawingManager: DrawingManager;
   newTerritoryForm: FormGroup;
   selectedTerritory: Territory;
-  editingTerritory: Territory;
   myCongregation: string;
   isMapOpen = false;
   isNewTerritoryOpen = false;
-  currentPage = 1;
   polygons: any[] = [];
   map: any;
 
@@ -60,8 +58,14 @@ export class TerritoryComponent implements OnInit {
     this.myCongregation = this.authService.getCongregation();
   }
 
+  addTerritory() {
+    this.resetWizard();
+    this.selectedTerritory = null;
+    this.isNewTerritoryOpen = true;
+  }
+
   viewMap(territory: Territory) {
-    this.editingTerritory = territory;
+    this.selectedTerritory = territory;
     this.isMapOpen = true;
   }
 
@@ -72,6 +76,12 @@ export class TerritoryComponent implements OnInit {
   clearMap() {
     this.polygons.map(polygon => polygon.setMap(null));
     this.polygons = [];
+  }
+
+  resetWizard() {
+    this.wizard.reset();
+    this.newTerritoryForm.reset();
+    this.clearMap();
   }
 
   createTerritory() {
@@ -119,26 +129,45 @@ export class TerritoryComponent implements OnInit {
           }
         });
       }
-
-      this.currentPage = 1;
-      this.wizard.reset();
-      this.newTerritoryForm.reset();
-      this.clearMap();
     });
   }
 
-  editInfo(territory: Territory) {
+  editTerritory(territory: Territory) {
+    this.resetWizard();
     this.selectedTerritory = territory;
-    this.editingTerritory = Object.assign({}, territory);
+    this.newTerritoryForm.get('number').setValue(territory.number);
+    this.newTerritoryForm.get('name').setValue(territory.name);
+    this.isNewTerritoryOpen = true;
   }
 
-  updateInfo() {
-    const territory = {
+  updateTerritory() {
+    const territory: Territory = {
       $key: this.selectedTerritory.$key,
-      number: this.editingTerritory.number,
-      name: this.editingTerritory.name
+      number: this.newTerritoryForm.get('number').value,
+      name: this.newTerritoryForm.get('name').value
     };
-    this.territoryService.updateTerritory(territory).then(() => this.selectedTerritory = null);
+
+    if (this.polygons.length) {
+      const paths = [];
+      this.polygons.map(polygon => {
+        const path: Path[] = [];
+        polygon.getPath().forEach(el => path.push({
+          lat: el.lat(),
+          lng: el.lng()
+        }));
+        paths.push(path);
+      });
+      const center = {
+        lat: this.map.center.lat(),
+        lng: this.map.center.lng()
+      }
+
+      territory.center = center;
+      territory.zoom = this.map.zoom;
+      territory.paths = paths;
+    }
+
+    this.territoryService.updateTerritory(territory);
   }
 
 }
