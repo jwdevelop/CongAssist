@@ -16,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let house of houses | orderBy:'order'">
+        <tr *ngFor="let house of houses | async">
           <td>
             <span *ngIf="selectedHouse !== house">{{house.order}}</span>
             <span *ngIf="selectedHouse === house">
@@ -36,8 +36,7 @@
               </button>
             </span>
             <span *ngIf="selectedHouse === house">
-              <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1"
-                (click)="save()">
+              <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1" (click)="save()">
                 <clr-icon shape="check"></clr-icon>
               </button>
             </span>
@@ -54,8 +53,30 @@
           </td>
         </tr>
 
+        <tr *ngIf="selectedHouse === newHouse">
+          <td>
+            <input type="number" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="editingHouse.name" placeholder="번지수 혹은 호수">
+          </td>
+          <td>
+            <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1" (click)="save()">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+            <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="cancel()">
+              <clr-icon shape="times"></clr-icon>
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm btn-icon no-margin" disabled>
+              <clr-icon shape="trash"></clr-icon>
+            </button>
+          </td>
+        </tr>
+
         <tr>
-          <td colspan="4" *ngIf="houses.length === 0">집을 추가해 주세요.</td>
+          <td colspan="4" *ngIf="(houses | async)?.length === 0">집을 추가해 주세요.</td>
         </tr>
       </tbody>
     </table>

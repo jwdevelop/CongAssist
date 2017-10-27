@@ -128,9 +128,8 @@ export class TerritoryService {
    * @returns
    * @memberof TerritoryService
    */
-  deleteHouse(territoryKey: string, house: House) {
+  deleteHouse(territoryKey: string, houseKey: string) {
     const congregation = this.authService.getCongregation();
-    const houseKey = house.$key;
     return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}`).remove();
   }
 
@@ -143,7 +142,9 @@ export class TerritoryService {
    */
   getHouses(territoryKey: string) {
     const congregation = this.authService.getCongregation();
-    return this.db.list(`${congregation}/houses/${territoryKey}`);
+    return this.db.list(`${congregation}/houses/${territoryKey}`).map(houses => {
+      return houses.sort((a, b) => +a.order < +b.order ? -1 : 1);
+    });
   }
 
   /**
