@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let territory of territories | orderBy:'number'">
+        <tr *ngFor="let territory of territories | async">
           <td>{{territory.number}}</td>
           <td>{{territory.name}}</td>
           <td>
@@ -33,7 +33,7 @@
             </button>
           </td>
         </tr>
-        <td *ngIf="territories.length === 0" colspan="3">구역이 없습니다.</td>
+        <td *ngIf="(territories | async)?.length === 0" colspan="3">구역이 없습니다.</td>
       </tbody>
     </table>
 
