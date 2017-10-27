@@ -2,7 +2,7 @@
 <div class="content-container">
   <div class="content-area">
 
-    <button class="btn btn-primary" (click)="isNewTerritoryOpen = true">
+    <button class="btn btn-primary" (click)="addTerritory()">
       <clr-icon shape="plus"></clr-icon> 추가
     </button>
 
@@ -16,23 +16,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let territory of territories | orderBy:'number'">
+          <td>{{territory.number}}</td>
+          <td>{{territory.name}}</td>
           <td>
-            <span *ngIf="selectedTerritory === territory"><input type="number" min="1" [(ngModel)]="editingTerritory.number"></span>
-            <span *ngIf="selectedTerritory !== territory">{{territory.number}}</span>
-          </td>
-          <td>
-            <span *ngIf="selectedTerritory === territory"><input type="text" min="1" [(ngModel)]="editingTerritory.name"></span>
-            <span *ngIf="selectedTerritory !== territory">{{territory.name}}</span>
-            <button class="btn btn-sm btn-success-outline btn-icon no-margin" *ngIf="selectedTerritory === territory" (click)="updateInfo()">
-              <clr-icon shape="check"></clr-icon>
-            </button>
-          </td>
-          <td>
-            <button class="btn btn-sm btn-icon no-margin" *ngIf="selectedTerritory !== territory" [disabled]="selectedTerritory" (click)="editInfo(territory)">
+            <button class="btn btn-sm btn-icon no-margin" (click)="editTerritory(territory)">
               <clr-icon shape="pencil"></clr-icon>
-            </button>
-            <button class="btn btn-sm btn-warning-outline btn-icon no-margin" *ngIf="selectedTerritory === territory" (click)="selectedTerritory = null">
-              <clr-icon shape="times"></clr-icon>
             </button>
             <button class="btn btn-sm btn-icon no-margin" [routerLink]="['/house', territory.$key]">
               <clr-icon shape="home"></clr-icon>
@@ -53,20 +41,22 @@
 </div>
 
 <clr-modal [(clrModalOpen)]="isMapOpen">
-  <div class="modal-body" *ngIf="editingTerritory">
-    <ngui-map center="{{editingTerritory.center.lat}}, {{editingTerritory.center.lng}}" zoom="{{editingTerritory.zoom}}">
-      <polygon [editable]="false" [paths]="editingTerritory.paths"></polygon>
+  <div class="modal-body" *ngIf="selectedTerritory">
+    <ngui-map center="{{selectedTerritory.center.lat}}, {{selectedTerritory.center.lng}}" zoom="{{selectedTerritory.zoom}}">
+      <polygon [editable]="false" [paths]="selectedTerritory.paths"></polygon>
     </ngui-map>
   </div>
 </clr-modal>
 
-<clr-wizard #newTerritory [(clrWizardOpen)]="isNewTerritoryOpen" (clrWizardOnFinish)="createTerritory()" clrWizardSize="lg">
-  <clr-wizard-title>구역생성</clr-wizard-title>
+<clr-wizard #newTerritory [(clrWizardOpen)]="isNewTerritoryOpen" clrWizardSize="lg"
+                          (clrWizardOnFinish)="selectedTerritory ? updateTerritory() : createTerritory()"
+                          (clrWizardOnCancel)="resetWizard()">
+  <clr-wizard-title>{{selectedTerritory ? '구역수정' : '구역생성'}}</clr-wizard-title>
 
   <clr-wizard-button [type]="'cancel'">취소</clr-wizard-button>
-  <clr-wizard-button [type]="'previous'" *ngIf="currentPage > 1" (click)="currentPage = currentPage-1">뒤로</clr-wizard-button>
-  <clr-wizard-button [type]="'next'" *ngIf="newTerritoryForm.valid && currentPage < 2" (click)="currentPage = currentPage+1">다음</clr-wizard-button>
-  <clr-wizard-button [type]="'finish'" *ngIf="currentPage == 2 && polygons.length">finish</clr-wizard-button>
+  <clr-wizard-button [type]="'previous'">뒤로</clr-wizard-button>
+  <clr-wizard-button [type]="'next'">다음</clr-wizard-button>
+  <clr-wizard-button [type]="'finish'">{{selectedTerritory ? '수정' : '생성'}}</clr-wizard-button>
 
   <clr-wizard-page [clrWizardPageNextDisabled]="newTerritoryForm.invalid">
     <ng-template clrPageTitle>구역정보</ng-template>
@@ -80,7 +70,7 @@
           <label for="name">이름</label>
           <input type="text" id="name" formControlName="name" placeholder="구역명을 입력해주세요.">
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="!selectedTerritory">
           <label for="isApartment">아파트</label>
           <clr-checkbox id="isApartment" formControlName="isApartment"></clr-checkbox>
         </div>
@@ -110,7 +100,7 @@
     </form>
   </clr-wizard-page>
 
-  <clr-wizard-page>
+  <clr-wizard-page [clrWizardPageNextDisabled]="!polygons.length && !selectedTerritory">
     <ng-template clrPageTitle>지도입력</ng-template>
     <ngui-map center="{{myCongregation}}">
       <drawing-manager [drawingMode]="'polygon'" [drawingControl]="true" [drawingControlOptions]="{
