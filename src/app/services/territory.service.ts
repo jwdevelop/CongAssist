@@ -31,20 +31,12 @@ export class TerritoryService {
    */
   getTerritories() {
     const congregation = this.authService.getCongregation();
-    return this.db.list(`${congregation}/territories`)
-                  .map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
-  }
-
-  /**
-   * Return single territory
-   *
-   * @param {string} key
-   * @returns
-   * @memberof TerritoryService
-   */
-  getTerritory(territoryKey: string) {
-    const congregation = this.authService.getCongregation();
-    return this.db.object(`${congregation}/territories/${territoryKey}`);
+    return this.db.list(`${congregation}/territories`, {
+      query: {
+        orderByChild: 'disabled',
+        endAt: null
+      }
+    }).map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
   }
 
   /**
@@ -130,7 +122,7 @@ export class TerritoryService {
    */
   deleteHouse(territoryKey: string, houseKey: string) {
     const congregation = this.authService.getCongregation();
-    return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}`).remove();
+    return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}`).update({ disabled: true });
   }
 
   /**
@@ -142,9 +134,12 @@ export class TerritoryService {
    */
   getHouses(territoryKey: string) {
     const congregation = this.authService.getCongregation();
-    return this.db.list(`${congregation}/houses/${territoryKey}`).map(houses => {
-      return houses.sort((a, b) => +a.order < +b.order ? -1 : 1);
-    });
+    return this.db.list(`${congregation}/houses/${territoryKey}`, {
+      query: {
+        orderByChild: 'disabled',
+        endAt: null
+      }
+    }).map(houses => houses.sort((a, b) => +a.order < +b.order ? -1 : 1));
   }
 
   /**
@@ -233,12 +228,36 @@ export class TerritoryService {
     return this.db.list(`${congregation}/history/houses/${houseKey}`);
   }
 
+  /**
+   * Update territory information
+   *
+   * @param {Territory} territory
+   * @returns
+   * @memberof TerritoryService
+   */
   updateTerritory(territory: Territory) {
     const congregation = this.authService.getCongregation();
     const territoryKey = territory.$key;
     delete territory.$key;
 
     return this.db.object(`${congregation}/territories/${territoryKey}`).update(territory);
+  }
+
+  deleteTerritory(territoryKey: string) {
+    const congregation = this.authService.getCongregation();
+
+    this.db.list(`${congregation}/users`, {
+      query: {
+        orderByChild: 'territories',
+        startAt: ''
+      }
+    }).map(users => {
+      users.filter(user => user.territories.hasOwnProperty(territoryKey)).forEach(user => {
+        this.deleteTerritoryFromUser(user.$key, territoryKey);
+      });
+    });
+
+    return this.db.object(`${congregation}/territories/${territoryKey}`).update({ disabled: true });
   }
 
 }
