@@ -1,10 +1,22 @@
+<clr-modal [(clrModalOpen)]="isAlertWindowOpen">
+  <h3 class="modal-title">{{alertWindowTitle}}</h3>
+  <div class="modal-body">
+    <p>{{alertWindowText}}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="isAlertWindowOpen = false">취소</button>
+    <button type="button" class="btn btn-danger" (click)="editingHouse ? deleteHouse() : deleteTerritory()"><clr-icon shape="trash"></clr-icon> 삭제</button>
+  </div>
+</clr-modal>
+
 <app-header></app-header>
 <div class="content-container">
   <div class="content-area">
 
-    <button class="btn btn-primary" (click)="addRow()" [disabled]="selectedHouse">
-      <clr-icon shape="plus"></clr-icon> 추가
-    </button>
+    <clr-button-group>
+      <clr-button class="btn-danger" (click)="openAlertTerritory()"><clr-icon shape="trash"></clr-icon> 구역삭제</clr-button>
+      <clr-button class="btn-primary" (click)="addRow()" [disabled]="selectedHouse"><clr-icon shape="plus"></clr-icon> 집추가</clr-button>
+    </clr-button-group>
 
     <table class="table">
       <thead>
@@ -41,13 +53,13 @@
               </button>
             </span>
             <span *ngIf="selectedHouse === house">
-              <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="cancel()">
+              <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="selectedHouse = null">
                 <clr-icon shape="times"></clr-icon>
               </button>
             </span>
           </td>
           <td>
-            <button class="btn btn-danger btn-sm btn-icon no-margin" [disabled]="selectedHouse" (click)="delete(house)">
+            <button class="btn btn-danger btn-sm btn-icon no-margin" [disabled]="selectedHouse" (click)="openAlertHouse(house)">
               <clr-icon shape="trash"></clr-icon>
             </button>
           </td>
@@ -64,7 +76,7 @@
             <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1" (click)="save()">
               <clr-icon shape="check"></clr-icon>
             </button>
-            <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="cancel()">
+            <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="selectedHouse = null">
               <clr-icon shape="times"></clr-icon>
             </button>
           </td>
@@ -76,7 +88,7 @@
         </tr>
 
         <tr>
-          <td colspan="4" *ngIf="(houses | async)?.length === 0">집을 추가해 주세요.</td>
+          <td colspan="4" *ngIf="!(houses | async)?.length && !selectedHouse">집을 추가해 주세요.</td>
         </tr>
       </tbody>
     </table>
