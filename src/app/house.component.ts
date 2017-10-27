@@ -2,18 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { TerritoryService } from 'app/services/territory.service';
 import { House } from 'app/classes/house';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
+
 
 @Component({
   templateUrl: './house.component.html'
 })
 export class HouseComponent implements OnInit {
 
-  houses: House[] = [];
+  houses: Observable<House[]>;
   territoryKey: string;
   selectedHouse: House;
   editingHouse: House;
+  newHouse: House = {
+    order: 1,
+    name: ''
+  };
 
   constructor(
     private territoryService: TerritoryService,
@@ -21,19 +26,15 @@ export class HouseComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.switchMap((params: ParamMap) => {
+    this.houses = this.route.paramMap.switchMap((params: ParamMap) => {
       this.territoryKey = params.get('key');
       return this.territoryService.getHouses(this.territoryKey);
-    }).subscribe(houses => this.houses = houses);
+    });
   }
 
   addRow() {
-    this.houses.push({
-      name: '',
-      order: 1
-    });
-    this.selectedHouse = this.houses[this.houses.length - 1];
-    this.editingHouse = Object.assign({}, this.houses[this.houses.length - 1]);
+    this.selectedHouse = this.newHouse;
+    this.editingHouse = Object.assign({}, this.newHouse);
   }
 
   save() {
@@ -45,7 +46,6 @@ export class HouseComponent implements OnInit {
     } else {
       this.territoryService.createHouse(this.territoryKey, this.editingHouse).then(() => {
         this.selectedHouse = null;
-        this.houses = this.houses.filter(house => house.$key);
       });
     }
   }
@@ -57,11 +57,10 @@ export class HouseComponent implements OnInit {
 
   cancel() {
     this.selectedHouse = null;
-    this.houses = this.houses.filter(house => house.$key);
   }
 
   delete(house: House) {
-    this.territoryService.deleteHouse(this.territoryKey, house);
+    this.territoryService.deleteHouse(this.territoryKey, house.$key);
   }
 
 }
