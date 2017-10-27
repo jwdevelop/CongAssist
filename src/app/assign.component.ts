@@ -3,6 +3,7 @@ import { UserService } from 'app/services/user.service';
 import { User } from 'app/classes/user';
 import { TerritoryService } from 'app/services/territory.service';
 import { Territory } from 'app/classes/territory';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   templateUrl: './assign.component.html'
@@ -10,7 +11,7 @@ import { Territory } from 'app/classes/territory';
 export class AssignComponent implements OnInit {
 
   isAssignTerritoryOpen = false;
-  territories: Territory[] = [];
+  territories: Observable<Territory[]>;
   selectedUser: User;
   unassignedUsers: User[];
   assignedUsers: User[];
@@ -26,7 +27,7 @@ export class AssignComponent implements OnInit {
       this.assignedUsers = users.filter(user => user.territories && user.username !== 'admin');
     });
 
-    this.territoryService.getTerritories().subscribe(territories => this.territories = territories);
+    this.territories = this.territoryService.getTerritories();
   }
 
   openAssignTerritory(user: User) {

@@ -31,7 +31,8 @@ export class TerritoryService {
    */
   getTerritories() {
     const congregation = this.authService.getCongregation();
-    return this.db.list(`${congregation}/territories`);
+    return this.db.list(`${congregation}/territories`)
+                  .map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
   }
 
   /**
