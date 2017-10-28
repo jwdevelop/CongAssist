@@ -260,4 +260,34 @@ export class TerritoryService {
     return this.db.object(`${congregation}/territories/${territoryKey}`).update({ disabled: true });
   }
 
+  getDeletedTerritories() {
+    const congregation = this.authService.getCongregation();
+    return this.db.list(`${congregation}/territories`, {
+      query: {
+        orderByChild: 'disabled',
+        equalTo: true
+      }
+    }).map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
+  }
+
+  recoverTerritory(territoryKey) {
+    const congregation = this.authService.getCongregation();
+    return this.db.object(`${congregation}/territories/${territoryKey}/disabled`).remove();
+  }
+
+  getDeletedHouses(territoryKey: string) {
+    const congregation = this.authService.getCongregation();
+    return this.db.list(`${congregation}/houses/${territoryKey}`, {
+      query: {
+        orderByChild: 'disabled',
+        equalTo: true
+      }
+    }).map(houses => houses.sort((a, b) => +a.order < +b.order ? -1 : 1));
+  }
+
+  recoverHouse(territoryKey: string, houseKey: string) {
+    const congregation = this.authService.getCongregation();
+    return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}/disabled`).remove();
+  }
+
 }
