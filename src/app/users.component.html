@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let signup of signups">
+        <tr *ngFor="let signup of signups | async">
           <td>{{signup.name}}</td>
           <td>{{signup.phone}}</td>
           <td>
@@ -30,7 +30,7 @@
             </button>
           </td>
         </tr>
-        <tr *ngIf="signups.length === 0">
+        <tr *ngIf="(signups | async)?.length === 0">
           <td colspan="3">사용자가 없습니다.</td>
         </tr>
       </tbody>
@@ -49,7 +49,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of users | async">
           <td>
             <span *ngIf="selectedUser !== user">{{user.name}}</span>
             <span *ngIf="selectedUser === user">
@@ -104,7 +104,7 @@
             </button>
           </td>
         </tr>
-        <tr *ngIf="users.length === 0">
+        <tr *ngIf="(users | async)?.length === 0">
           <td colspan="6">사용자가 없습니다.</td>
         </tr>
       </tbody>

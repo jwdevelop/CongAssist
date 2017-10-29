@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TerritoryService } from 'app/services/territory.service';
 import { House } from 'app/classes/house';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
 
 
 @Component({
   templateUrl: './house.component.html'
 })
-export class HouseComponent implements OnInit {
+export class HouseComponent implements OnInit, OnDestroy {
 
   houses: Observable<House[]>;
+  housesSubscription: Subscription;
   deletedHouses: Observable<House[]>;
 
   territoryKey: string;
@@ -36,6 +38,12 @@ export class HouseComponent implements OnInit {
       this.territoryKey = params.get('key');
       return this.territoryService.getHouses(this.territoryKey);
     });
+
+    this.housesSubscription = this.houses.subscribe(() => this.selectedHouse = null);
+  }
+
+  ngOnDestroy() {
+    this.housesSubscription.unsubscribe();
   }
 
   openAlertHouse(house: House) {
@@ -86,6 +94,7 @@ export class HouseComponent implements OnInit {
   }
 
   fetchDeleteHouses() {
+    this.selectedHouse = null;
     if (!this.deletedHouses) {
       this.deletedHouses = this.territoryService.getDeletedHouses(this.territoryKey);
     }

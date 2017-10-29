@@ -28,7 +28,7 @@
                 <td>
                   <span *ngIf="selectedHouse !== house">{{house.order}}</span>
                   <span *ngIf="selectedHouse === house">
-                    <input type="number" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
+                    <input type="number" class="input-narrow" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
                   </span>
                 </td>
                 <td>
@@ -63,7 +63,7 @@
 
               <tr *ngIf="selectedHouse === newHouse">
                 <td>
-                  <input type="number" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
+                  <input type="number" class="input-narrow" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
                 </td>
                 <td>
                   <input type="text" [(ngModel)]="editingHouse.name" placeholder="번지수 혹은 호수">
