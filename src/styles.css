@@ -41,3 +41,7 @@
 .margin-top {
   margin-top: 15px;
 }
+
+.input-narrow {
+  width: 3em;
+}
