@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from 'app/services/user.service';
 import { Signup } from 'app/classes/signup';
 import { User } from 'app/classes/user';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   templateUrl: './users.component.html'
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
 
-  signups: Signup[] = [];
-  users: User[] = [];
+  signups: Observable<Signup[]>;
+  users: Observable<User[]>;
+  usersSubscription: Subscription;
   alertText = '';
   isAlertClosed = true;
   alertType = 'alert-info';
@@ -21,8 +24,14 @@ export class UsersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.userService.getSignups().subscribe(signups => this.signups = signups);
-    this.userService.getUsers().subscribe(users => this.users = users);
+    this.signups = this.userService.getSignups();
+    this.users = this.userService.getUsers();
+
+    this.usersSubscription = this.users.subscribe(() => this.selectedUser = null);
+  }
+
+  ngOnDestroy() {
+    this.usersSubscription.unsubscribe();
   }
 
   approve(signup: Signup) {

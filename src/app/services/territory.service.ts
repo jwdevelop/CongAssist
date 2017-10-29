@@ -31,19 +31,12 @@ export class TerritoryService {
    */
   getTerritories() {
     const congregation = this.authService.getCongregation();
-    return this.db.list(`${congregation}/territories`);
-  }
-
-  /**
-   * Return single territory
-   *
-   * @param {string} key
-   * @returns
-   * @memberof TerritoryService
-   */
-  getTerritory(territoryKey: string) {
-    const congregation = this.authService.getCongregation();
-    return this.db.object(`${congregation}/territories/${territoryKey}`);
+    return this.db.list(`${congregation}/territories`, {
+      query: {
+        orderByChild: 'disabled',
+        endAt: null
+      }
+    }).map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
   }
 
   /**
@@ -127,10 +120,9 @@ export class TerritoryService {
    * @returns
    * @memberof TerritoryService
    */
-  deleteHouse(territoryKey: string, house: House) {
+  deleteHouse(territoryKey: string, houseKey: string) {
     const congregation = this.authService.getCongregation();
-    const houseKey = house.$key;
-    return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}`).remove();
+    return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}`).update({ disabled: true });
   }
 
   /**
@@ -142,7 +134,12 @@ export class TerritoryService {
    */
   getHouses(territoryKey: string) {
     const congregation = this.authService.getCongregation();
-    return this.db.list(`${congregation}/houses/${territoryKey}`);
+    return this.db.list(`${congregation}/houses/${territoryKey}`, {
+      query: {
+        orderByChild: 'disabled',
+        endAt: null
+      }
+    }).map(houses => houses.sort((a, b) => +a.order < +b.order ? -1 : 1));
   }
 
   /**
@@ -231,12 +228,66 @@ export class TerritoryService {
     return this.db.list(`${congregation}/history/houses/${houseKey}`);
   }
 
+  /**
+   * Update territory information
+   *
+   * @param {Territory} territory
+   * @returns
+   * @memberof TerritoryService
+   */
   updateTerritory(territory: Territory) {
     const congregation = this.authService.getCongregation();
     const territoryKey = territory.$key;
     delete territory.$key;
 
     return this.db.object(`${congregation}/territories/${territoryKey}`).update(territory);
+  }
+
+  deleteTerritory(territoryKey: string) {
+    const congregation = this.authService.getCongregation();
+
+    this.db.list(`${congregation}/users`, {
+      query: {
+        orderByChild: 'territories',
+        startAt: ''
+      }
+    }).map(users => {
+      users.filter(user => user.territories.hasOwnProperty(territoryKey)).forEach(user => {
+        this.deleteTerritoryFromUser(user.$key, territoryKey);
+      });
+    });
+
+    return this.db.object(`${congregation}/territories/${territoryKey}`).update({ disabled: true });
+  }
+
+  getDeletedTerritories() {
+    const congregation = this.authService.getCongregation();
+    return this.db.list(`${congregation}/territories`, {
+      query: {
+        orderByChild: 'disabled',
+        equalTo: true
+      }
+    }).map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
+  }
+
+  recoverTerritory(territoryKey) {
+    const congregation = this.authService.getCongregation();
+    return this.db.object(`${congregation}/territories/${territoryKey}/disabled`).remove();
+  }
+
+  getDeletedHouses(territoryKey: string) {
+    const congregation = this.authService.getCongregation();
+    return this.db.list(`${congregation}/houses/${territoryKey}`, {
+      query: {
+        orderByChild: 'disabled',
+        equalTo: true
+      }
+    }).map(houses => houses.sort((a, b) => +a.order < +b.order ? -1 : 1));
+  }
+
+  recoverHouse(territoryKey: string, houseKey: string) {
+    const congregation = this.authService.getCongregation();
+    return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}/disabled`).remove();
   }
 
 }

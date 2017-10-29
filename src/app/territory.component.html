@@ -2,40 +2,85 @@
 <div class="content-container">
   <div class="content-area">
 
-    <button class="btn btn-primary" (click)="addTerritory()">
-      <clr-icon shape="plus"></clr-icon> 추가
-    </button>
+    <clr-tabs>
+      <clr-tab>
+        <button clrTabLink>사용중구역</button>
+        <clr-tab-content *clrIfActive>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>번호</th>
-          <th>이름</th>
-          <th>기능</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let territory of territories | orderBy:'number'">
-          <td>{{territory.number}}</td>
-          <td>{{territory.name}}</td>
-          <td>
-            <button class="btn btn-sm btn-icon no-margin" (click)="editTerritory(territory)">
-              <clr-icon shape="pencil"></clr-icon>
-            </button>
-            <button class="btn btn-sm btn-icon no-margin" [routerLink]="['/house', territory.$key]">
-              <clr-icon shape="home"></clr-icon>
-            </button>
-            <button class="btn btn-sm btn-icon no-margin" (click)="viewMap(territory)">
-              <clr-icon shape="map"></clr-icon>
-            </button>
-            <button class="btn btn-sm btn-warning btn-icon no-margin" (click)="restart(territory)">
-              <clr-icon shape="refresh"></clr-icon>
-            </button>
-          </td>
-        </tr>
-        <td *ngIf="territories.length === 0" colspan="3">구역이 없습니다.</td>
-      </tbody>
-    </table>
+          <button class="btn btn-primary" (click)="addTerritory()">
+            <clr-icon shape="plus"></clr-icon> 추가
+          </button>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>이름</th>
+                <th>기능</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let territory of territories | async">
+                <td>{{territory.number}}</td>
+                <td>{{territory.name}}</td>
+                <td>
+                  <button class="btn btn-sm btn-icon no-margin" (click)="editTerritory(territory)">
+                    <clr-icon shape="pencil"></clr-icon>
+                  </button>
+                  <button class="btn btn-sm btn-icon no-margin" [routerLink]="['/house', territory.$key]">
+                    <clr-icon shape="home"></clr-icon>
+                  </button>
+                  <button class="btn btn-sm btn-icon no-margin" (click)="viewMap(territory)">
+                    <clr-icon shape="map"></clr-icon>
+                  </button>
+                  <button class="btn btn-sm btn-warning btn-icon no-margin" (click)="restart(territory)">
+                    <clr-icon shape="refresh"></clr-icon>
+                  </button>
+                </td>
+              </tr>
+              <td *ngIf="(territories | async)?.length === 0" colspan="3">구역이 없습니다.</td>
+            </tbody>
+          </table>
+
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink (click)="fetchDeleteTerritories()">삭제된구역</button>
+        <clr-tab-content *clrIfActive>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>이름</th>
+                <th>기능</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let territory of deletedTerritories | async">
+                <td>{{territory.number}}</td>
+                <td>{{territory.name}}</td>
+                <td>
+                  <button class="btn btn-sm btn-icon no-margin" (click)="editTerritory(territory)">
+                    <clr-icon shape="pencil"></clr-icon>
+                  </button>
+                  <button class="btn btn-sm btn-icon no-margin" (click)="viewMap(territory)">
+                    <clr-icon shape="map"></clr-icon>
+                  </button>
+                  <button class="btn btn-sm btn-success btn-icon no-margin" (click)="recoverTerritory(territory)">
+                    <clr-icon shape="history"></clr-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="(deletedTerritories | async)?.length === 0">
+                <td colspan="3">삭제된 구역이 없습니다.</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </clr-tab-content>
+      </clr-tab>
+    </clr-tabs>
 
   </div>
 </div>
@@ -48,9 +93,8 @@
   </div>
 </clr-modal>
 
-<clr-wizard #newTerritory [(clrWizardOpen)]="isNewTerritoryOpen" clrWizardSize="lg"
-                          (clrWizardOnFinish)="selectedTerritory ? updateTerritory() : createTerritory()"
-                          (clrWizardOnCancel)="resetWizard()">
+<clr-wizard #newTerritory [(clrWizardOpen)]="isNewTerritoryOpen" clrWizardSize="lg" (clrWizardOnFinish)="selectedTerritory ? updateTerritory() : createTerritory()"
+  (clrWizardOnCancel)="resetWizard()">
   <clr-wizard-title>{{selectedTerritory ? '구역수정' : '구역생성'}}</clr-wizard-title>
 
   <clr-wizard-button [type]="'cancel'">취소</clr-wizard-button>

@@ -7,6 +7,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DrawingManager } from '@ngui/map';
 import { Path } from 'app/classes/path';
 import { House } from 'app/classes/house';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   templateUrl: './territory.component.html'
@@ -23,7 +24,8 @@ export class TerritoryComponent implements OnInit {
   polygons: any[] = [];
   map: any;
 
-  territories: Territory[] = [];
+  territories: Observable<Territory[]>;
+  deletedTerritories: Observable<Territory[]>;
 
   constructor(
     private territoryService: TerritoryService,
@@ -42,7 +44,7 @@ export class TerritoryComponent implements OnInit {
       numberTo: new FormControl(null)
     });
 
-    this.territoryService.getTerritories().subscribe(territories => this.territories = territories);
+    this.territories = this.territoryService.getTerritories();
 
     this.drawingManager['initialized$'].subscribe(dm => {
       this.map = dm.map;
@@ -74,7 +76,7 @@ export class TerritoryComponent implements OnInit {
   }
 
   clearMap() {
-    this.polygons.map(polygon => polygon.setMap(null));
+    this.polygons.forEach(polygon => polygon.setMap(null));
     this.polygons = [];
   }
 
@@ -168,6 +170,16 @@ export class TerritoryComponent implements OnInit {
     }
 
     this.territoryService.updateTerritory(territory);
+  }
+
+  fetchDeleteTerritories() {
+    if (!this.deletedTerritories) {
+      this.deletedTerritories = this.territoryService.getDeletedTerritories();
+    }
+  }
+
+  recoverTerritory(territory: Territory) {
+    this.territoryService.recoverTerritory(territory.$key);
   }
 
 }

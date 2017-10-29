@@ -1,39 +1,76 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TerritoryService } from 'app/services/territory.service';
 import { House } from 'app/classes/house';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
+
 
 @Component({
   templateUrl: './house.component.html'
 })
-export class HouseComponent implements OnInit {
+export class HouseComponent implements OnInit, OnDestroy {
 
-  houses: House[] = [];
+  houses: Observable<House[]>;
+  housesSubscription: Subscription;
+  deletedHouses: Observable<House[]>;
+
   territoryKey: string;
-  selectedHouse: House;
-  editingHouse: House;
+  selectedHouse: House = null;
+  editingHouse: House = null;
+  newHouse: House = {
+    order: 1,
+    name: ''
+  };
+  isAlertWindowOpen = false;
+  alertWindowTitle = '';
+  alertWindowText = '';
 
   constructor(
     private territoryService: TerritoryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.switchMap((params: ParamMap) => {
+    this.houses = this.route.paramMap.switchMap((params: ParamMap) => {
       this.territoryKey = params.get('key');
       return this.territoryService.getHouses(this.territoryKey);
-    }).subscribe(houses => this.houses = houses);
+    });
+
+    this.housesSubscription = this.houses.subscribe(() => this.selectedHouse = null);
+  }
+
+  ngOnDestroy() {
+    this.housesSubscription.unsubscribe();
+  }
+
+  openAlertHouse(house: House) {
+    this.alertWindowTitle = '집 삭제';
+    this.alertWindowText = `'${house.name}'을 삭제하시겠습니까?`;
+    this.isAlertWindowOpen = true;
+    this.editingHouse = house;
+  }
+
+  openAlertTerritory() {
+    this.alertWindowTitle = '구역 삭제';
+    this.alertWindowText = '이 구역을 삭제하시겠습니까?';
+    this.isAlertWindowOpen = true;
+    this.selectedHouse = null;
+    this.editingHouse = null;
+  }
+
+  deleteTerritory() {
+    this.territoryService.deleteTerritory(this.territoryKey).then(() => {
+      this.isAlertWindowOpen = false;
+      this.router.navigate(['/territory']);
+    });
   }
 
   addRow() {
-    this.houses.push({
-      name: '',
-      order: 1
-    });
-    this.selectedHouse = this.houses[this.houses.length - 1];
-    this.editingHouse = Object.assign({}, this.houses[this.houses.length - 1]);
+    this.selectedHouse = this.newHouse;
+    this.editingHouse = Object.assign({}, this.newHouse);
   }
 
   save() {
@@ -43,10 +80,7 @@ export class HouseComponent implements OnInit {
         this.selectedHouse = null;
       });
     } else {
-      this.territoryService.createHouse(this.territoryKey, this.editingHouse).then(() => {
-        this.selectedHouse = null;
-        this.houses = this.houses.filter(house => house.$key);
-      });
+      this.territoryService.createHouse(this.territoryKey, this.editingHouse);
     }
   }
 
@@ -55,13 +89,19 @@ export class HouseComponent implements OnInit {
     this.editingHouse = Object.assign({}, house);
   }
 
-  cancel() {
-    this.selectedHouse = null;
-    this.houses = this.houses.filter(house => house.$key);
+  deleteHouse() {
+    this.territoryService.deleteHouse(this.territoryKey, this.editingHouse.$key).then(() => this.isAlertWindowOpen = false);
   }
 
-  delete(house: House) {
-    this.territoryService.deleteHouse(this.territoryKey, house);
+  fetchDeleteHouses() {
+    this.selectedHouse = null;
+    if (!this.deletedHouses) {
+      this.deletedHouses = this.territoryService.getDeletedHouses(this.territoryKey);
+    }
+  }
+
+  recoverHouse(house: House) {
+    this.territoryService.recoverHouse(this.territoryKey, house.$key);
   }
 
 }

@@ -2,63 +2,139 @@
 <div class="content-container">
   <div class="content-area">
 
-    <button class="btn btn-primary" (click)="addRow()" [disabled]="selectedHouse">
-      <clr-icon shape="plus"></clr-icon> 추가
-    </button>
+    <clr-tabs>
+      <clr-tab>
+        <button clrTabLink>사용중집</button>
+        <clr-tab-content *clrIfActive>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>순서</th>
-          <th>이름</th>
-          <th>수정</th>
-          <th>삭제</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let house of houses | orderBy:'order'">
-          <td>
-            <span *ngIf="selectedHouse !== house">{{house.order}}</span>
-            <span *ngIf="selectedHouse === house">
-              <input type="number" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
-            </span>
-          </td>
-          <td>
-            <span *ngIf="selectedHouse !== house">{{house.name}}</span>
-            <span *ngIf="selectedHouse === house">
-              <input type="text" [(ngModel)]="editingHouse.name" placeholder="번지수 혹은 호수">
-            </span>
-          </td>
-          <td>
-            <span *ngIf="selectedHouse !== house">
-              <button class="btn btn-sm btn-icon no-margin" [disabled]="selectedHouse" (click)="edit(house)">
-                <clr-icon shape="pencil"></clr-icon>
-              </button>
-            </span>
-            <span *ngIf="selectedHouse === house">
-              <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1"
-                (click)="save()">
-                <clr-icon shape="check"></clr-icon>
-              </button>
-            </span>
-            <span *ngIf="selectedHouse === house">
-              <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="cancel()">
-                <clr-icon shape="times"></clr-icon>
-              </button>
-            </span>
-          </td>
-          <td>
-            <button class="btn btn-danger btn-sm btn-icon no-margin" [disabled]="selectedHouse" (click)="delete(house)">
-              <clr-icon shape="trash"></clr-icon>
-            </button>
-          </td>
-        </tr>
+          <clr-button-group class="margin-top">
+            <clr-button class="btn-danger" (click)="openAlertTerritory()">
+              <clr-icon shape="trash"></clr-icon> 구역삭제</clr-button>
+            <clr-button class="btn-primary" (click)="addRow()" [disabled]="selectedHouse">
+              <clr-icon shape="plus"></clr-icon> 집추가</clr-button>
+          </clr-button-group>
 
-        <tr>
-          <td colspan="4" *ngIf="houses.length === 0">집을 추가해 주세요.</td>
-        </tr>
-      </tbody>
-    </table>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>순서</th>
+                <th>이름</th>
+                <th>수정</th>
+                <th>삭제</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let house of houses | async">
+                <td>
+                  <span *ngIf="selectedHouse !== house">{{house.order}}</span>
+                  <span *ngIf="selectedHouse === house">
+                    <input type="number" class="input-narrow" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
+                  </span>
+                </td>
+                <td>
+                  <span *ngIf="selectedHouse !== house">{{house.name}}</span>
+                  <span *ngIf="selectedHouse === house">
+                    <input type="text" [(ngModel)]="editingHouse.name" placeholder="번지수 혹은 호수">
+                  </span>
+                </td>
+                <td>
+                  <span *ngIf="selectedHouse !== house">
+                    <button class="btn btn-sm btn-icon no-margin" [disabled]="selectedHouse" (click)="edit(house)">
+                      <clr-icon shape="pencil"></clr-icon>
+                    </button>
+                  </span>
+                  <span *ngIf="selectedHouse === house">
+                    <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1" (click)="save()">
+                      <clr-icon shape="check"></clr-icon>
+                    </button>
+                  </span>
+                  <span *ngIf="selectedHouse === house">
+                    <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="selectedHouse = null">
+                      <clr-icon shape="times"></clr-icon>
+                    </button>
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-danger btn-sm btn-icon no-margin" [disabled]="selectedHouse" (click)="openAlertHouse(house)">
+                    <clr-icon shape="trash"></clr-icon>
+                  </button>
+                </td>
+              </tr>
+
+              <tr *ngIf="selectedHouse === newHouse">
+                <td>
+                  <input type="number" class="input-narrow" [(ngModel)]="editingHouse.order" min="1" placeholder="순서를 입력">
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="editingHouse.name" placeholder="번지수 혹은 호수">
+                </td>
+                <td>
+                  <button class="btn btn-success btn-sm btn-icon no-margin" [disabled]="editingHouse.name.length < 1" (click)="save()">
+                    <clr-icon shape="check"></clr-icon>
+                  </button>
+                  <button class="btn btn-warning btn-sm btn-icon no-margin" (click)="selectedHouse = null">
+                    <clr-icon shape="times"></clr-icon>
+                  </button>
+                </td>
+                <td>
+                  <button class="btn btn-danger btn-sm btn-icon no-margin" disabled>
+                    <clr-icon shape="trash"></clr-icon>
+                  </button>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="4" *ngIf="!(houses | async)?.length && !selectedHouse">집을 추가해 주세요.</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink (click)="fetchDeleteHouses()">삭제된집</button>
+        <clr-tab-content *clrIfActive>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>순서</th>
+                <th>이름</th>
+                <th>복구</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let house of deletedHouses | async">
+                <td>{{house.order}}</td>
+                <td>{{house.name}}</td>
+                <td>
+                  <button class="btn btn-success btn-sm btn-icon no-margin" (click)="recoverHouse(house)">
+                    <clr-icon shape="history"></clr-icon>
+                  </button>
+                </td>
+              </tr>
+
+              <tr *ngIf="!(deletedHouses | async)?.length">
+                <td colspan="3">삭제된 집이 없습니다.</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </clr-tab-content>
+      </clr-tab>
+    </clr-tabs>
 
   </div>
 </div>
+
+<clr-modal [(clrModalOpen)]="isAlertWindowOpen">
+  <h3 class="modal-title">{{alertWindowTitle}}</h3>
+  <div class="modal-body">
+    <p>{{alertWindowText}}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="isAlertWindowOpen = false">취소</button>
+    <button type="button" class="btn btn-danger" (click)="editingHouse ? deleteHouse() : deleteTerritory()">
+      <clr-icon shape="trash"></clr-icon> 삭제</button>
+  </div>
+</clr-modal>
