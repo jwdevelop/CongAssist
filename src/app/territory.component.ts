@@ -25,6 +25,7 @@ export class TerritoryComponent implements OnInit {
   map: any;
 
   territories: Observable<Territory[]>;
+  deletedTerritories: Observable<Territory[]>;
 
   constructor(
     private territoryService: TerritoryService,
@@ -169,6 +170,16 @@ export class TerritoryComponent implements OnInit {
     }
 
     this.territoryService.updateTerritory(territory);
+  }
+
+  fetchDeleteTerritories() {
+    if (!this.deletedTerritories) {
+      this.deletedTerritories = this.territoryService.getDeletedTerritories();
+    }
+  }
+
+  recoverTerritory(territory: Territory) {
+    this.territoryService.recoverTerritory(territory.$key);
   }
 
 }

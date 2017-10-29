@@ -12,6 +12,8 @@ import 'rxjs/add/operator/switchMap';
 export class HouseComponent implements OnInit {
 
   houses: Observable<House[]>;
+  deletedHouses: Observable<House[]>;
+
   territoryKey: string;
   selectedHouse: House = null;
   editingHouse: House = null;
@@ -81,6 +83,16 @@ export class HouseComponent implements OnInit {
 
   deleteHouse() {
     this.territoryService.deleteHouse(this.territoryKey, this.editingHouse.$key).then(() => this.isAlertWindowOpen = false);
+  }
+
+  fetchDeleteHouses() {
+    if (!this.deletedHouses) {
+      this.deletedHouses = this.territoryService.getDeletedHouses(this.territoryKey);
+    }
+  }
+
+  recoverHouse(house: House) {
+    this.territoryService.recoverHouse(this.territoryKey, house.$key);
   }
 
 }
