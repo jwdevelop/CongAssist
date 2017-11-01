@@ -23,10 +23,12 @@ script:
     else
       ng build;
     fi
+after_success:
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then firebase deploy --project qa --token $FIREBASE_TOKEN; fi
 deploy:
   provider: firebase
   token: "$FIREBASE_TOKEN"
-  project: if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then "congassist-1935"; else "congassist-qa"; fi
+  project: "congassist-1935"
 notifications:
   email:
     on_failure: change
