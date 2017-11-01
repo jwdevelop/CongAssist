@@ -1,7 +1,6 @@
 language: node_js
 node_js:
-  - "iojs"
-  - "8"
+  - "8.4.0"
 branches:
   only:
   - master
@@ -18,11 +17,8 @@ install:
 before_script:
   - npm install -g @angular/cli
 script:
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      ng build --prod;
-    else
-      ng build;
-    fi
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ng build --prod; fi
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ng build; fi
 after_success:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then firebase deploy --project qa --token $FIREBASE_TOKEN; fi
 deploy:
