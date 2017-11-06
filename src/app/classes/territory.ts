@@ -6,5 +6,6 @@ export interface Territory {
   center?: Path;
   zoom?: number;
   paths?: any[];
+  users?: any;
   $key?: any;
 }

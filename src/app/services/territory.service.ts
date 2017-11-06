@@ -47,9 +47,10 @@ export class TerritoryService {
    * @returns
    * @memberof TerritoryService
    */
-  assignTerritoryToUser(territory: Territory, userKey: string) {
+  assignTerritoryToUser(territoryKey: string, userKey: string) {
     const congregation = this.authService.getCongregation();
-    return this.db.object(`${congregation}/users/${userKey}/territories`).update({[territory.$key]: territory});
+    this.db.object(`${congregation}/territories/${territoryKey}/users`).update({[userKey]: Date.now()})
+    return this.db.object(`${congregation}/users/${userKey}/territories`).update({[territoryKey]: Date.now()});
   }
 
   /**
@@ -62,6 +63,7 @@ export class TerritoryService {
    */
   deleteTerritoryFromUser(userKey: string, territoryKey: string) {
     const congregation = this.authService.getCongregation();
+    this.db.object(`${congregation}/territories/${territoryKey}/users/${userKey}`).remove()
     return this.db.object(`${congregation}/users/${userKey}/territories/${territoryKey}`).remove();
   }
 
@@ -288,6 +290,14 @@ export class TerritoryService {
   recoverHouse(territoryKey: string, houseKey: string) {
     const congregation = this.authService.getCongregation();
     return this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}/disabled`).remove();
+  }
+
+  getMyTerritories() {
+    const loginInfo = this.authService.getLoginInfo();
+    const userKey = loginInfo.userKey;
+
+    return this.getTerritories()
+      .map(territories => territories.filter(territory => territory.hasOwnProperty('users') && territory.users.hasOwnProperty(userKey)));
   }
 
 }

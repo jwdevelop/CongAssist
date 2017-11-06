@@ -8,16 +8,16 @@
       </clr-alert-item>
     </clr-alert>
 
-    <div *ngIf="!territories.length && !isLoading">
+    <div *ngIf="!(territories | async)?.length && !isLoading">
       <clr-icon shape="times-circle" class="full-image"></clr-icon>
       <h2 class="center">현재 구역카드가 없습니다.</h2>
     </div>
 
     <span *ngIf="isLoading" class="spinner spinner-lg spinner-center">Loading...</span>
 
-    <div class="row" *ngIf="territories.length">
+    <div class="row" *ngIf="(territories | async)?.length">
 
-      <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngFor="let territory of territories">
+      <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngFor="let territory of territories | async">
         <div class="card">
           <div class="card-header">
             <div class="card-title">{{territory.number}}. {{territory.name}}</div>
@@ -33,9 +33,9 @@
           </div>
           <div class="card-footer">
             <!-- TODO: Progress bar -->
-            <!-- <div class="progress">
+            <div class="progress">
               <progress value="30" max="100"></progress>
-            </div> -->
+            </div>
             <button [routerLink]="['/houselist', territory.$key]" class="btn btn-outline">봉사하기</button>
             <button class="btn btn-danger" (click)="return(territory.$key)">반납하기</button>
           </div>
