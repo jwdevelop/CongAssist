@@ -15,6 +15,7 @@
             <thead>
               <tr>
                 <th>번호</th>
+                <th>완료</th>
                 <th>이름</th>
                 <th>기능</th>
               </tr>
@@ -22,6 +23,7 @@
             <tbody>
               <tr *ngFor="let territory of territories | async">
                 <td>{{territory.number}}</td>
+                <td>{{territory.visited}} / {{territory.total}}</td>
                 <td>{{territory.name}}</td>
                 <td>
                   <button class="btn btn-sm btn-icon no-margin" (click)="editTerritory(territory)">
@@ -33,7 +35,7 @@
                   <button class="btn btn-sm btn-icon no-margin" (click)="viewMap(territory)">
                     <clr-icon shape="map"></clr-icon>
                   </button>
-                  <button class="btn btn-sm btn-warning btn-icon no-margin" (click)="restart(territory)">
+                  <button class="btn btn-sm btn-warning btn-icon no-margin" [disabled]="isRestarting" (click)="restart(territory)">
                     <clr-icon shape="refresh"></clr-icon>
                   </button>
                 </td>

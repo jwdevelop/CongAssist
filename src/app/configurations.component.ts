@@ -54,4 +54,8 @@ export class ConfigurationsComponent implements OnInit {
     });
   }
 
+  fixDataError() {
+    this.configurationService.fixDataError();
+  }
+
 }

@@ -23,6 +23,7 @@ export class TerritoryComponent implements OnInit {
   isNewTerritoryOpen = false;
   polygons: any[] = [];
   map: any;
+  isRestarting = false;
 
   territories: Observable<Territory[]>;
   deletedTerritories: Observable<Territory[]>;
@@ -72,7 +73,8 @@ export class TerritoryComponent implements OnInit {
   }
 
   restart(territory: Territory) {
-    this.territoryService.restartTerritory(territory.$key);
+    this.isRestarting = true;
+    this.territoryService.restartTerritory(territory.$key).then(() => this.isRestarting = false);
   }
 
   clearMap() {

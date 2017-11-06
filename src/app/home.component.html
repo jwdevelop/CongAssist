@@ -32,9 +32,8 @@
             </div>
           </div>
           <div class="card-footer">
-            <!-- TODO: Progress bar -->
-            <div class="progress">
-              <progress value="30" max="100"></progress>
+            <div class="progress success">
+              <progress value="{{territory.visited}}" max="{{territory.total}}"></progress>
             </div>
             <button [routerLink]="['/houselist', territory.$key]" class="btn btn-outline">봉사하기</button>
             <button class="btn btn-danger" (click)="return(territory.$key)">반납하기</button>
