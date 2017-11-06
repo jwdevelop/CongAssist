@@ -17,6 +17,10 @@
           <button class="btn btn-icon btn-success" [disabled]="isLoading || isAnnouncementShowing || !configForm.get('announcement').value" (click)="updateAnnouncement(true)"><clr-icon shape="eye"></clr-icon></button>
           <button class="btn btn-icon" [disabled]="isLoading || !isAnnouncementShowing" (click)="updateAnnouncement(false)"><clr-icon shape="eye-hide"></clr-icon></button>
         </div>
+        <div class="form-group">
+          <label>데이터오류 수정</label>
+          <button class="btn btn-icon" (click)="fixDataError()"><clr-icon shape="lightbulb"></clr-icon></button>
+        </div>
       </section>
     </form>
 

@@ -49,8 +49,9 @@ export class TerritoryService {
    */
   assignTerritoryToUser(territoryKey: string, userKey: string) {
     const congregation = this.authService.getCongregation();
-    this.db.object(`${congregation}/territories/${territoryKey}/users`).update({[userKey]: Date.now()})
-    return this.db.object(`${congregation}/users/${userKey}/territories`).update({[territoryKey]: Date.now()});
+    const timestamp = Date.now();
+    this.db.object(`${congregation}/territories/${territoryKey}/users`).update({[userKey]: timestamp})
+    return this.db.object(`${congregation}/users/${userKey}/territories`).update({[territoryKey]: timestamp});
   }
 
   /**
@@ -77,12 +78,18 @@ export class TerritoryService {
    */
   restartTerritory(territoryKey: string) {
     const congregation = this.authService.getCongregation();
-    return Promise.resolve(this.db.list(`${congregation}/houses/${territoryKey}`).subscribe(houses => {
-      houses.forEach(house => {
-        if (!house.records) { return; }
-        this.db.object(`${congregation}/houses/${territoryKey}/${house.$key}/records`).remove();
-      });
-    }));
+
+    this.db.list(`${congregation}/houses/${territoryKey}`).$ref.once('value', snapshot => {
+      const houses = snapshot.val();
+
+      for (const houseKey in houses) {
+        if (houses[houseKey].hasOwnProperty('records')) {
+          this.db.object(`${congregation}/houses/${territoryKey}/${houseKey}/records`).remove();
+        }
+      }
+    });
+
+    return this.db.object(`${congregation}/territories/${territoryKey}`).update({ visited: 0 });
   }
 
   /**
@@ -96,7 +103,12 @@ export class TerritoryService {
   createHouse(territoryKey: string, house: House) {
     const congregation = this.authService.getCongregation();
     if (house.$key) { delete house.$key; }
-    return this.db.list(`${congregation}/houses/${territoryKey}`).push(house);
+
+    return this.db.list(`${congregation}/houses/${territoryKey}`).push(house).then(() => {
+      this.db.list(`${congregation}/houses/${territoryKey}`).subscribe(houses => {
+        this.db.object(`${congregation}/territories/${territoryKey}`).update({ total: houses.length });
+      });
+    });
   }
 
   /**
@@ -168,8 +180,12 @@ export class TerritoryService {
       code: code
     };
 
-    return this.db.list(`${congregation}/houses/${territoryKey}/${houseKey}/records/${code}`).push({[userKey]: timestamp})
-          .then(() => this.makeHistory(historyLocation, history));
+    this.db.list(`${congregation}/houses/${territoryKey}`).subscribe(houses => {
+      this.db.object(`${congregation}/territories/${territoryKey}`)
+              .update({ visited: houses.filter(house => house.hasOwnProperty('records')).length });
+    });
+    this.db.list(`${congregation}/houses/${territoryKey}/${houseKey}/records/${code}`).push({[userKey]: timestamp});
+    return this.makeHistory(historyLocation, history);
   }
 
   /**
@@ -202,8 +218,12 @@ export class TerritoryService {
       note: note
     };
 
-    return this.db.list(`${congregation}/houses/${territoryKey}/${houseKey}/records/${code}`).push(record)
-          .then(() => this.makeHistory(historyLocation, history));
+    this.db.list(`${congregation}/houses/${territoryKey}`).subscribe(houses => {
+      this.db.object(`${congregation}/territories/${territoryKey}`)
+              .update({ visited: houses.filter(house => house.hasOwnProperty('records')).length });
+    });
+    this.db.list(`${congregation}/houses/${territoryKey}/${houseKey}/records/${code}`).push(record);
+    return this.makeHistory(historyLocation, history);
   }
 
   /**

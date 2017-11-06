@@ -18,7 +18,6 @@ import { TerritoryService } from 'app/services/territory.service';
 import { UserService } from 'app/services/user.service';
 import { ConfigurationService } from 'app/services/configuration.service';
 // Pipe
-import { KeysPipe } from 'app/pipes/keys.pipe';
 import { OrderByPipe } from 'app/pipes/orderby.pipe';
 // Component
 import { AppComponent } from 'app/app.component';
@@ -36,7 +35,6 @@ import { ConfigurationsComponent } from 'app/configurations.component';
 
 @NgModule({
   declarations: [
-    KeysPipe,
     OrderByPipe,
     AppComponent,
     LoginComponent,
