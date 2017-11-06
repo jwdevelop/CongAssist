@@ -36,7 +36,7 @@
                 <div class="card-block">
                   <h3 class="card-title">{{user.name}}</h3>
                   <ul class="list-unstyled">
-                    <li *ngFor="let key of user.territories | keys">{{user.territories[key].number}}. {{user.territories[key].name}}</li>
+                    <li *ngFor="let territory of user.territories">{{territory.number}}. {{territory.name}}</li>
                   </ul>
                 </div>
 
@@ -44,7 +44,7 @@
                   <clr-dropdown>
                     <button type="button" class="btn btn-icon btn-danger" clrDropdownTrigger><clr-icon shape="trash"></clr-icon> 반납 <clr-icon shape="caret down"></clr-icon></button>
                     <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
-                      <button type="button" clrDropdownItem *ngFor="let key of user.territories | keys" (click)="deleteTerritory(user, key)">{{user.territories[key].number}}. {{user.territories[key].name}}</button>
+                      <button type="button" clrDropdownItem *ngFor="let territory of user.territories" (click)="deleteTerritory(user, territory)">{{territory.number}}. {{territory.name}}</button>
                     </clr-dropdown-menu>
                   </clr-dropdown>
                   <button class="btn btn-icon btn-primary" (click)="openAssignTerritory(user)"><clr-icon shape="plus"></clr-icon> 추가</button>

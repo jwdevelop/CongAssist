@@ -1,9 +1,9 @@
-export class User {
+export interface User {
   name: string;
   phone?: string;
   password: string;
   role: string;
   username: string;
-  territories: any;
+  territories?: any;
   $key?: any;
 }

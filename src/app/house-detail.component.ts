@@ -21,7 +21,6 @@ export class HouseDetailComponent implements OnInit {
       const houseKey = params.get('key');
       return this.territoryService.getHouseHistory(houseKey);
     }).subscribe(history => {
-      console.log(history)
       for (const record of history) {
         if (record.code === 1) { record.code = '만남'; }
         if (record.code === 2) { record.code = '부재'; }
