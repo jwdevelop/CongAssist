@@ -41,7 +41,7 @@ export class HouseListComponent implements OnInit {
                   if (code === '2') { house.note = '부재: '; }
                   if (code === '3') { house.note = '거절: '; }
                   if (code === '4') { house.note = '노트: '; }
-                  house.note += new Date(timestamp).toLocaleDateString();
+                  house.note += new Date(timestamp).toISOString().substring(0, 10);
                 }
               }
             }

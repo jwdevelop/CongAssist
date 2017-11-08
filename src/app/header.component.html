@@ -24,7 +24,8 @@
         <a routerLink="/territory" *ngIf="user.role == 'admin'" clrDropdownItem>구역관리</a>
         <a routerLink="/users" *ngIf="user.role == 'admin'" clrDropdownItem>사용자관리</a>
         <a routerLink="/configurations" *ngIf="user.role == 'admin'" clrDropdownItem>구역설정</a>
-        <a routerLink="/setting" clrDropdownItem>설정</a>
+        <a routerLink="/reports" *ngIf="user.role == 'admin'" clrDropdownItem>리포트</a>
+        <a routerLink="/setting" clrDropdownItem>내정보</a>
         <a (click)="logout()" clrDropdownItem>로그아웃</a>
       </clr-dropdown-menu>
     </clr-dropdown>

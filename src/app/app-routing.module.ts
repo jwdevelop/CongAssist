@@ -13,6 +13,7 @@ import { TerritoryComponent } from 'app/territory.component';
 import { HouseComponent } from 'app/house.component';
 import { SettingComponent } from 'app/setting.component';
 import { ConfigurationsComponent } from 'app/configurations.component';
+import { ReportsComponent } from 'app/reports.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -25,6 +26,7 @@ const appRoutes: Routes = [
   { path: 'house/:key', component: HouseComponent, canActivate: [ AuthGuard ] },
   { path: 'houselist/:key', component: HouseListComponent, canActivate: [ AuthGuard ] },
   { path: 'housedetail/:key', component: HouseDetailComponent, canActivate: [ AuthGuard ] },
+  { path: 'reports', component: ReportsComponent, canActivate: [ AuthGuard ] },
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
 
