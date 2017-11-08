@@ -174,6 +174,8 @@ export class TerritoryService {
     const username = this.authService.getUserName();
     const historyLocation = `${congregation}/history/houses/${houseKey}`;
     const history = {
+      territoryKey: territoryKey,
+      houseKey: houseKey,
       userKey: userKey,
       username: username,
       timestamp: timestamp,
@@ -211,6 +213,8 @@ export class TerritoryService {
     const username = this.authService.getUserName();
     const historyLocation = `${congregation}/history/houses/${houseKey}`;
     const history = {
+      territoryKey: territoryKey,
+      houseKey: houseKey,
       userKey: userKey,
       username: username,
       timestamp: timestamp,
