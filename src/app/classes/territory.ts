@@ -1,4 +1,5 @@
 import { Path } from 'app/classes/path';
+import { Observable } from 'rxjs/Observable';
 
 export interface Territory {
   number: number;
@@ -9,5 +10,6 @@ export interface Territory {
   users?: any;
   visited?: number;
   total?: number;
+  histories?: Observable<any[]>;
   $key?: any;
 }

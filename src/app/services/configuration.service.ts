@@ -52,6 +52,34 @@ export class ConfigurationService {
       });
     });
 
+    console.log('fixing the visit history...');
+    this.db.list(`${congregation}/history/houses`).$ref.once('value', snapshot => {
+      const houses = snapshot.val();
+
+      for (const houseKey in houses) {
+        if (houses.hasOwnProperty(houseKey)) {
+          for (const userKey in houses[houseKey]) {
+            if (houses[houseKey].hasOwnProperty(userKey)) {
+              if (!houses[houseKey][userKey].hasOwnProperty('territoryKey')) {
+                this.db.list(`${congregation}/houses`).$ref.once('value', snap => {
+                  const housesData = snap.val();
+                  for (const territoryKey in housesData) {
+                    if (housesData[territoryKey].hasOwnProperty(houseKey)) {
+                      this.db.object(`${congregation}/history/houses/${houseKey}/${userKey}`).update({ territoryKey: territoryKey });
+                      break;
+                    }
+                  }
+                });
+              }
+              if (!houses[houseKey][userKey].hasOwnProperty('houseKey')) {
+                this.db.object(`${congregation}/history/houses/${houseKey}/${userKey}`).update({ houseKey: houseKey });
+              }
+            }
+          }
+        }
+      }
+    });
+
     console.log('Done!');
   }
 }
