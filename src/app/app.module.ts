@@ -10,6 +10,8 @@ import { environment } from '../environments/environment';
 import { ClarityModule } from 'clarity-angular';
 // Angular Google Map
 import { NguiMapModule} from '@ngui/map';
+// Datepicker
+import { DateTimePickerModule } from 'ng-pick-datetime';
 // Module
 import { AppRoutingModule } from 'app/app-routing.module';
 // Service
@@ -17,6 +19,7 @@ import { AuthService } from 'app/services/auth.service';
 import { TerritoryService } from 'app/services/territory.service';
 import { UserService } from 'app/services/user.service';
 import { ConfigurationService } from 'app/services/configuration.service';
+import { ReportService } from 'app/services/report.service';
 // Pipe
 import { OrderByPipe } from 'app/pipes/orderby.pipe';
 // Component
@@ -32,6 +35,7 @@ import { TerritoryComponent } from 'app/territory.component';
 import { HouseComponent } from 'app/house.component';
 import { SettingComponent } from 'app/setting.component';
 import { ConfigurationsComponent } from 'app/configurations.component';
+import { ReportsComponent } from 'app/reports.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +51,8 @@ import { ConfigurationsComponent } from 'app/configurations.component';
     TerritoryComponent,
     HouseComponent,
     SettingComponent,
-    ConfigurationsComponent
+    ConfigurationsComponent,
+    ReportsComponent
 ],
   imports: [
     BrowserModule,
@@ -57,10 +62,11 @@ import { ConfigurationsComponent } from 'app/configurations.component';
     AngularFireModule.initializeApp( environment.firebase ),
     AngularFireDatabaseModule,
     ClarityModule.forRoot(),
+    DateTimePickerModule,
     NguiMapModule.forRoot({apiUrl: `https://maps.google.com/maps/api/js?key=${environment.googleApi}&libraries=drawing`}),
     AppRoutingModule
   ],
-  providers: [ AuthService, TerritoryService, UserService, ConfigurationService ],
+  providers: [ AuthService, TerritoryService, UserService, ConfigurationService, ReportService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

@@ -45,3 +45,7 @@
 .input-narrow {
   width: 3em;
 }
+
+.owl-dateTime-dialog {
+  position: relative !important;
+}

@@ -1,0 +1,48 @@
+<app-header></app-header>
+<div class="content-container">
+  <div class="content-area">
+
+    <form>
+      <section class="form-block">
+        <div class="form-group">
+          <label>보고서 선택</label>
+          <div class="radio-inline">
+            <input type="radio" name="selectedReport" id="circuit" value="circuit" [(ngModel)]="selectedReport">
+            <label for="circuit">순회방문보고</label>
+          </div>
+          <div class="radio-inline">
+            <!-- TODO: #70 -->
+            <input type="radio" disabled name="selectedReport" id="publisher" value="publisher" [(ngModel)]="selectedReport">
+            <label for="publisher">전도인 - 구역</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>리포트 기준 날자</label>
+          <owl-date-time name="dateFrom"
+            [type]="'calendar'"
+            [selectionMode]="'range'"
+            [dateFormat]="'YYYY/MM/DD'"
+            [disabled]="selectedReport !== 'circuit'"
+            [(ngModel)]="dateRange"></owl-date-time>
+        </div>
+        <button class="btn" (click)="viewReport()" [disabled]="selectedReport === 'circuit' && !dateRange"><clr-icon shape="list"></clr-icon> 보기</button>
+      </section>
+    </form>
+
+    <clr-datagrid>
+      <clr-dg-column *ngFor="let colum of columns">{{colum}}</clr-dg-column>
+
+      <clr-dg-row *ngFor="let territory of territories | async">
+        <clr-dg-cell>{{territory.number}}</clr-dg-cell>
+        <clr-dg-cell>{{territory.name}}</clr-dg-cell>
+        <clr-dg-cell>{{(territory.histories | async)?.length ? ((territory.histories | async)[0].timestamp | date:'yyyy/MM/dd') : ''}}</clr-dg-cell>
+        <clr-dg-cell>{{(territory.histories | async)?.length ? (territory.histories | async)[0].username : ''}}</clr-dg-cell>
+        <clr-dg-cell>{{(territory.histories | async)?.length ? ((territory.histories | async)[1].timestamp | date:'yyyy/MM/dd') : ''}}</clr-dg-cell>
+        <clr-dg-cell>{{(territory.histories | async)?.length ? (territory.histories | async)[1].username : ''}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>합계: {{(territories | async)?.length}}</clr-dg-footer>
+    </clr-datagrid>
+
+  </div>
+</div>
