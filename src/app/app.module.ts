@@ -36,10 +36,12 @@ import { HouseComponent } from 'app/house.component';
 import { SettingComponent } from 'app/setting.component';
 import { ConfigurationsComponent } from 'app/configurations.component';
 import { ReportsComponent } from 'app/reports.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
     OrderByPipe,
+    FilterPipe,
     AppComponent,
     LoginComponent,
     HeaderComponent,

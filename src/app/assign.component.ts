@@ -24,7 +24,7 @@ export class AssignComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.territories = this.territoryService.getTerritories().map(territories => territories.filter(territory => territory.users));
+    this.territories = this.territoryService.getTerritories();
     this.territoriesSubscription = this.territories.subscribe(territories => {
       this.userService.getUsers().subscribe(users => {
         this.unassignedUsers = users.filter(user => !user.territories && user.username !== 'admin');
