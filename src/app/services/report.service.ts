@@ -41,4 +41,10 @@ export class ReportService {
       return histories;
     });
   }
+
+  resetHistory() {
+    const congregation = this.authService.getCongregation();
+
+    return this.db.list(`${congregation}/history`).remove();
+  }
 }
