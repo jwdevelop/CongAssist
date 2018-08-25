@@ -36,7 +36,7 @@ export class TerritoryService {
         orderByChild: 'disabled',
         endAt: null
       }
-    }).map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
+    }).map(territories => territories.sort((a, b) => a.users ? -1 : +a.number < +b.number ? -1 : 1));
   }
 
   /**
