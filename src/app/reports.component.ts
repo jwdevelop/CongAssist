@@ -41,4 +41,10 @@ export class ReportsComponent implements OnInit {
     }));
   }
 
+  resetReport() {
+    if (confirm('확인버튼을 누르면 모든 봉사기록을 삭제합니다.')) {
+      this.reportService.resetHistory();
+    }
+  }
+
 }

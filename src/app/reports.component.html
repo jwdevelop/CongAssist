@@ -26,6 +26,7 @@
             [(ngModel)]="dateRange"></owl-date-time>
         </div>
         <button class="btn" (click)="viewReport()" [disabled]="selectedReport === 'circuit' && !dateRange"><clr-icon shape="list"></clr-icon> 보기</button>
+        <button class="btn btn-danger" (click)="resetReport()"><clr-icon shape="trash"></clr-icon> 기록전체삭제</button>
       </section>
     </form>
 

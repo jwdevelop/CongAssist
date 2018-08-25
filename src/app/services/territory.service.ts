@@ -36,7 +36,7 @@ export class TerritoryService {
         orderByChild: 'disabled',
         endAt: null
       }
-    }).map(territories => territories.sort((a, b) => a.users ? -1 : +a.number < +b.number ? -1 : 1));
+    }).map(territories => territories.sort((a, b) => +a.number < +b.number ? -1 : 1));
   }
 
   /**
@@ -50,7 +50,7 @@ export class TerritoryService {
   assignTerritoryToUser(territoryKey: string, userKey: string) {
     const congregation = this.authService.getCongregation();
     const timestamp = Date.now();
-    this.db.object(`${congregation}/territories/${territoryKey}/users`).update({[userKey]: timestamp})
+    this.db.object(`${congregation}/territories/${territoryKey}/users`).update({[userKey]: timestamp});
     return this.db.object(`${congregation}/users/${userKey}/territories`).update({[territoryKey]: timestamp});
   }
 
