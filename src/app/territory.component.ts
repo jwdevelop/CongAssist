@@ -73,8 +73,10 @@ export class TerritoryComponent implements OnInit {
   }
 
   restart(territory: Territory) {
-    this.isRestarting = true;
-    this.territoryService.restartTerritory(territory.$key).then(() => this.isRestarting = false);
+    if (confirm('구역을 재시작 하시겠습니까?')) {
+      this.isRestarting = true;
+      this.territoryService.restartTerritory(territory.$key).then(() => this.isRestarting = false);
+    }
   }
 
   clearMap() {
