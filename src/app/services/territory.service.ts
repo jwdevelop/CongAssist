@@ -50,6 +50,7 @@ export class TerritoryService {
   assignTerritoryToUser(territoryKey: string, userKey: string) {
     const congregation = this.authService.getCongregation();
     const timestamp = Date.now();
+    this.db.object(`${congregation}/territories/${territoryKey}`).update({ lastVisited: timestamp });
     this.db.object(`${congregation}/territories/${territoryKey}/users`).update({[userKey]: timestamp});
     return this.db.object(`${congregation}/users/${userKey}/territories`).update({[territoryKey]: timestamp});
   }
